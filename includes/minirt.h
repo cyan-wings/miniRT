@@ -5,4 +5,10 @@
 # include "mlx_int.h"
 # include "libft.h"
 
+# if defined(__APPLE__)
+#  include "keys_macos.h"
+# else
+#  include "keys.h"
+# endif
+
 #endif

@@ -52,18 +52,22 @@ OBJDIRS			=	$(sort $(dir $(OBJS)))
 ##############################################
 
 NAME			=	miniRT
-CC				=	cc
-CFLAGS			=	-Wall -Wextra -Werror$(if $(FSANITIZE), $(FSANITIZE))
+CC			=	cc
 #FSANITIZE		=	-fsanitize=address -g
+CFLAGS			=	-Wall -Wextra -Werror$(if $(FSANITIZE), $(FSANITIZE))
+
+ifeq ($(UNAME), Darwin)
+	CFLAGS		+=	-DDARWIN
+endif
 
 IFLAGS			=	$(HDRINC) $(LIBFTINC) $(MLXINC)
 LFLAGS			=	$(LIBFTLD) $(MLXLD)
 
-RM				=	rm -rf
+RM			=	rm -rf
 MAKE			=	make
 MAKE_C			=	$(MAKE) -C
 
-UP				=	\033[1A
+UP			=	\033[1A
 FLUSH			=	\033[2K
 
 
