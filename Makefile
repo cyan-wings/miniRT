@@ -7,11 +7,17 @@ LIBFTINC		=	-I$(LIBFTDIR)/includes/
 LIBFTLD			=	-L$(LIBFTDIR) -lft
 LIBFT			=	$(LIBFTDIR)/libft.a
 
-MLXDIR			=	libmlx
-MLXINC			=	-I$(MLXDIR)
-MLXLD			=	-lmlx -L$(MLXDIR) -lXext -lX11 -lm -lz
-MLX				=	$(MLXDIR)/libmlx.a
+UNAME			=	$(shell uname)
+ifeq ($(UNAME), Darwin)
+	MLXDIR		=	libmlx
+	MLXLD		=	-lmlx -L$(MLXDIR) -framework OpenGL -framework AppKit
+else
+	MLXDIR		=	libmlx
+	MLXLD		=	-lmlx -L$(MLXDIR) -lXext -lX11 -lm -lz
+endif
 
+MLX			=	$(MLXDIR)/libmlx.a
+MAXINC			=	-I$(MLXDIR)
 
 ##############################################
 ###HEADERS								######
