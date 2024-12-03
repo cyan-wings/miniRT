@@ -9,7 +9,7 @@ LIBFT			=	$(LIBFTDIR)/libft.a
 
 UNAME			=	$(shell uname)
 ifeq ($(UNAME), Darwin)
-	MLXDIR		=	libmlx
+	MLXDIR		=	libmlx_macos
 	MLXLD		=	-lmlx -L$(MLXDIR) -framework OpenGL -framework AppKit
 else
 	MLXDIR		=	libmlx
@@ -17,7 +17,7 @@ else
 endif
 
 MLX			=	$(MLXDIR)/libmlx.a
-MAXINC			=	-I$(MLXDIR)
+MLXINC			=	-I$(MLXDIR)
 
 ##############################################
 ###HEADERS								######
