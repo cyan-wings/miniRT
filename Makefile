@@ -32,10 +32,8 @@ HDRINC			=	-I$(HDRDIR)
 ##############################################
 
 SRCDIR			=	srcs/
-SRC_M			=	\
-					minirt/minirt										\
-
-SRCS			=	$(addsuffix .c, $(addprefix $(SRCDIR), $(SRC_M)))
+# Auto-detect all .c files in srcdir and subdirectories
+SRCS			=	$(shell find $(SRCDIR) -name "*.c")
 
 
 ##############################################
@@ -76,7 +74,7 @@ FLUSH			=	\033[2K
 ##############################################
 
 run: all
-	./$(NAME) scenes/scene.rt
+	./$(NAME) scenes/sample.rt
 
 all: $(NAME)
 

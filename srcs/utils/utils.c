@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minirt.c                                           :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: myeow <myeow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,41 +12,46 @@
 
 #include "minirt.h"
 
-static int	validate_args(int argc, char **argv)
+double	degrees_to_radians(double degrees)
 {
-	if (argc != 2)
-	{
-		ft_putendl_fd(ERR_USAGE, 2);
-		return (0);
-	}
-	if (!is_valid_extension(argv[1], ".rt"))
-	{
-		ft_putendl_fd("Error: File must have .rt extension", 2);
-		return (0);
-	}
-	return (1);
+	return (degrees * PI / 180.0);
 }
 
-static void	init_minirt(t_minirt *minirt)
+int	is_valid_extension(const char *filename, const char *ext)
 {
-	ft_memset(minirt, 0, sizeof(t_minirt));
+	int	filename_len;
+	int	ext_len;
+
+	if (!filename || !ext)
+		return (0);
+	filename_len = ft_strlen(filename);
+	ext_len = ft_strlen(ext);
+	if (filename_len < ext_len)
+		return (0);
+	return (ft_strcmp(filename + filename_len - ext_len, ext) == 0);
 }
 
-int	main(int argc, char **argv)
+void	error_exit(const char *message)
 {
-	t_minirt	minirt;
+	ft_putendl_fd("Error", 2);
+	if (message)
+		ft_putendl_fd((char *)message, 2);
+	exit(1);
+}
 
-	if (!validate_args(argc, argv))
-		return (1);
-	init_minirt(&minirt);
-	if (!parse_scene(argv[1], &minirt.scene))
-		error_exit(ERR_PARSE);
-	if (!init_mlx(&minirt.mlx_data))
-		cleanup_and_exit(&minirt, ERR_MLX);
-	camera_init(&minirt.scene.camera);
-	render_scene(&minirt);
-	mlx_key_hook(minirt.mlx_data.win, handle_key, &minirt);
-	mlx_hook(minirt.mlx_data.win, 17, 0, handle_close, &minirt);
-	mlx_loop(minirt.mlx_data.mlx);
-	return (0);
+void	cleanup_and_exit(t_minirt *minirt, const char *message)
+{
+	if (minirt)
+	{
+		cleanup_mlx(&minirt->mlx_data);
+		objects_free(&minirt->scene);
+	}
+	error_exit(message);
+}
+
+char	**ft_split_whitespace(char const *s)
+{
+	if (!s)
+		return (NULL);
+	return (ft_split(s, ' '));
 }

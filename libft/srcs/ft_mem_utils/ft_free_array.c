@@ -1,34 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_factorial.c                                     :+:      :+:    :+:   */
+/*   ft_free_array.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: myeow <myeow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/10 22:24:31 by myeow             #+#    #+#             */
-/*   Updated: 2024/08/10 22:30:12 by myeow            ###   ########.fr       */
+/*   Created: 2025/10/01 00:00:00 by myeow             #+#    #+#             */
+/*   Updated: 2025/10/01 00:00:00 by myeow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#define FACTORIAL_MAX 20
+#include "ft_mem_utils.h"
 
-unsigned long long	ft_factorial(int x)
+void	ft_free_array(void **array)
 {
-	static unsigned long long	factorial_cache[FACTORIAL_MAX + 1] = {1};
-	unsigned long long			dst;
+	int	i;
 
-	if (x < 0)
-		return (0);
-	if (x == 0)
-		return (1);
-	if (x <= FACTORIAL_MAX)
+	if (!array)
+		return ;
+	i = 0;
+	while (array[i])
 	{
-		if (factorial_cache[x] == 0)
-			factorial_cache[x] = x * ft_factorial(x - 1);
-		return (factorial_cache[x]);
+		free(array[i]);
+		i++;
 	}
-	dst = 1;
-	while (x > 1)
-		dst *= x--;
-	return (dst);
+	free(array);
 }

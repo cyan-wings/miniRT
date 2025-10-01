@@ -1,34 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_factorial.c                                     :+:      :+:    :+:   */
+/*   ray_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: myeow <myeow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/10 22:24:31 by myeow             #+#    #+#             */
-/*   Updated: 2024/08/10 22:30:12 by myeow            ###   ########.fr       */
+/*   Created: 2025/10/01 00:00:00 by myeow             #+#    #+#             */
+/*   Updated: 2025/10/01 00:00:00 by myeow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#define FACTORIAL_MAX 20
+#include "minirt.h"
 
-unsigned long long	ft_factorial(int x)
+t_ray	ray_create(t_vec3 origin, t_vec3 direction)
 {
-	static unsigned long long	factorial_cache[FACTORIAL_MAX + 1] = {1};
-	unsigned long long			dst;
+	t_ray	ray;
 
-	if (x < 0)
-		return (0);
-	if (x == 0)
-		return (1);
-	if (x <= FACTORIAL_MAX)
-	{
-		if (factorial_cache[x] == 0)
-			factorial_cache[x] = x * ft_factorial(x - 1);
-		return (factorial_cache[x]);
-	}
-	dst = 1;
-	while (x > 1)
-		dst *= x--;
-	return (dst);
+	ray.origin = origin;
+	ray.direction = ft_vec3_normalize(direction);
+	return (ray);
+}
+
+t_vec3	ray_at(t_ray ray, double t)
+{
+	return (ft_vec3_add(ray.origin, ft_vec3_mult(ray.direction, t)));
 }
