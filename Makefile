@@ -75,6 +75,9 @@ FLUSH			=	\033[2K
 ###RULES								######
 ##############################################
 
+run: all
+	./$(NAME) scenes/scene.rt
+
 all: $(NAME)
 
 bonus: all
