@@ -18,6 +18,7 @@ void	camera_init(t_camera *camera)
 	double	theta;
 	double	half_height;
 	double	half_width;
+	double	max_scatter;
 
 	camera->aspect_ratio = (double)WIN_WIDTH / (double)WIN_HEIGHT;
 	theta = degrees_to_radians(camera->fov);
@@ -27,10 +28,24 @@ void	camera_init(t_camera *camera)
 	camera->viewport_width = 2.0 * half_width;
 	world_up = (t_vec3){0, 1, 0};
 	camera->right = ft_vec3_normalize(ft_vec3_cross(camera->direction, world_up));
-	camera->up = ft_vec3_cross(camera->right, camera->direction);
+	if (ft_vec3_length(camera->right) < EPSILON)
+	{
+		world_up = (t_vec3){0, 0, 1};
+		camera->right = ft_vec3_normalize(ft_vec3_cross(camera->direction, world_up));
+	}
+	camera->up = ft_vec3_normalize(ft_vec3_cross(camera->right, camera->direction));
+	if (camera->scatter_angle < 0.0)
+		camera->scatter_angle = 0.0;
+	max_scatter = degrees_to_radians(MAX_SCATTER_ANGLE);
+	if (camera->scatter_angle > max_scatter)
+		camera->scatter_angle = max_scatter;
+	if (camera->rays_per_pixel < 1)
+		camera->rays_per_pixel = DEFAULT_RAYS_PER_PIXEL;
+	if (camera->rays_per_pixel > MAX_RAYS_PER_PIXEL)
+		camera->rays_per_pixel = MAX_RAYS_PER_PIXEL;
 }
 
-t_ray	camera_get_ray(t_camera *camera, double u, double v)
+static t_vec3	camera_base_direction(t_camera *camera, double u, double v)
 {
 	t_vec3	horizontal;
 	t_vec3	vertical;
@@ -44,6 +59,34 @@ t_ray	camera_get_ray(t_camera *camera, double u, double v)
 	lower_left = ft_vec3_add(lower_left, camera->direction);
 	direction = ft_vec3_add(lower_left, ft_vec3_mult(horizontal, u));
 	direction = ft_vec3_add(direction, ft_vec3_mult(vertical, v));
-	direction = ft_vec3_sub(direction, camera->position);
+	return (ft_vec3_sub(direction, camera->position));
+}
+
+t_ray	camera_get_ray(t_camera *camera, double u, double v)
+{
+	return (camera_get_ray_scattered(camera, u, v, 0.5, 0.5));
+}
+
+t_ray	camera_get_ray_scattered(t_camera *camera, double u, double v,
+	double jitter_u, double jitter_v)
+{
+	t_vec3	direction;
+	t_vec3	offset;
+	double	angle_x;
+	double	angle_y;
+	double	signed_u;
+	double	signed_v;
+
+	direction = camera_base_direction(camera, u, v);
+	if (camera->scatter_angle > 0.0)
+	{
+		signed_u = (2.0 * jitter_u) - 1.0;
+		signed_v = (2.0 * jitter_v) - 1.0;
+		angle_x = camera->scatter_angle * signed_u;
+		angle_y = camera->scatter_angle * signed_v;
+		offset = ft_vec3_add(ft_vec3_mult(camera->right, tan(angle_x)),
+				ft_vec3_mult(camera->up, tan(angle_y)));
+		direction = ft_vec3_add(direction, offset);
+	}
 	return (ray_create(camera->position, direction));
 }

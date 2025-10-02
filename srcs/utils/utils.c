@@ -55,3 +55,13 @@ char	**ft_split_whitespace(char const *s)
 		return (NULL);
 	return (ft_split(s, ' '));
 }
+
+double	random_double(void)
+{
+	return ((double)rand() / ((double)RAND_MAX + 1.0));
+}
+
+double	random_double_range(double min, double max)
+{
+	return (min + (max - min) * random_double());
+}

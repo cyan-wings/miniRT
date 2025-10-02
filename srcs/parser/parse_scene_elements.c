@@ -61,11 +61,34 @@ int	parse_ambient(char **tokens, t_ambient *ambient)
 
 int	parse_camera(char **tokens, t_camera *camera)
 {
+	double	scatter;
+	int		rpp;
+
 	if (!tokens[1] || !tokens[2] || !tokens[3])
 		return (0);
 	camera->position = parse_vector(tokens[1]);
 	camera->direction = ft_vec3_normalize(parse_vector(tokens[2]));
 	camera->fov = ft_atof(tokens[3]);
+	camera->scatter_angle = degrees_to_radians(DEFAULT_SCATTER_ANGLE);
+	camera->rays_per_pixel = DEFAULT_RAYS_PER_PIXEL;
+	if (tokens[4])
+	{
+		scatter = ft_atof(tokens[4]);
+		if (scatter < 0.0)
+			scatter = 0.0;
+		if (scatter > MAX_SCATTER_ANGLE)
+			scatter = MAX_SCATTER_ANGLE;
+		camera->scatter_angle = degrees_to_radians(scatter);
+	}
+	if (tokens[4] && tokens[5])
+	{
+		rpp = ft_atoi(tokens[5]);
+		if (rpp < 1)
+			rpp = DEFAULT_RAYS_PER_PIXEL;
+		if (rpp > MAX_RAYS_PER_PIXEL)
+			rpp = MAX_RAYS_PER_PIXEL;
+		camera->rays_per_pixel = rpp;
+	}
 	return (1);
 }
 

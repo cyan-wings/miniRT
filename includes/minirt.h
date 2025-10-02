@@ -21,6 +21,7 @@
 # include <math.h>
 # include <fcntl.h>
 # include <sys/time.h>
+# include <stdlib.h>
 
 # if defined(__APPLE__)
 #  include "keys_macos.h"
@@ -29,8 +30,8 @@
 # endif
 
 /* Window settings */
-# define WIN_WIDTH 800
-# define WIN_HEIGHT 600
+# define WIN_WIDTH 1920
+# define WIN_HEIGHT 900
 # define WIN_TITLE "miniRT"
 
 /* Ray tracing constants */
@@ -38,6 +39,10 @@
 # define EPSILON 1e-6
 # define INFINITY_F 1e30
 # define MAX_OBJECTS 100
+# define DEFAULT_SCATTER_ANGLE 0.0
+# define MAX_SCATTER_ANGLE 45.0
+# define DEFAULT_RAYS_PER_PIXEL 1
+# define MAX_RAYS_PER_PIXEL 1024
 
 /* Error messages */
 # define ERR_USAGE "Usage: ./miniRT [scene.rt]"
@@ -133,6 +138,8 @@ typedef struct s_camera
 	double	aspect_ratio;
 	double	viewport_width;
 	double	viewport_height;
+	double	scatter_angle;
+	int		rays_per_pixel;
 }	t_camera;
 
 /* Light structure */
@@ -209,6 +216,8 @@ t_vec3		ray_at(t_ray ray, double t);
 /* Camera */
 void		camera_init(t_camera *camera);
 t_ray		camera_get_ray(t_camera *camera, double u, double v);
+t_ray		camera_get_ray_scattered(t_camera *camera, double u, double v,
+				double jitter_u, double jitter_v);
 
 /* Collision detection */
 t_hit		intersect_scene(t_ray ray, t_scene *scene);
@@ -251,5 +260,7 @@ void		cleanup_and_exit(t_minirt *minirt, const char *message);
 double		degrees_to_radians(double degrees);
 int			is_valid_extension(const char *filename, const char *ext);
 char		**ft_split_whitespace(char const *s);
+double		random_double(void);
+double		random_double_range(double min, double max);
 
 #endif
