@@ -110,4 +110,15 @@ void				ft_quat_rotate(t_vec3 *v, t_quat *q, t_vec3 *out);
 void				ft_quat_slerp(t_quat *q1, t_quat *q2, double t, \
 		t_quat *out);
 
+//VEC3_UTILS
+t_vec3				ft_vec3_add(t_vec3 a, t_vec3 b);
+t_vec3				ft_vec3_sub(t_vec3 a, t_vec3 b);
+t_vec3				ft_vec3_mult(t_vec3 v, double t);
+t_vec3				ft_vec3_div(t_vec3 v, double t);
+double				ft_vec3_dot(t_vec3 a, t_vec3 b);
+t_vec3				ft_vec3_cross(t_vec3 a, t_vec3 b);
+double				ft_vec3_length(t_vec3 v);
+t_vec3				ft_vec3_normalize(t_vec3 v);
+t_vec3				ft_vec3_reflect(t_vec3 v, t_vec3 n);
+
 #endif

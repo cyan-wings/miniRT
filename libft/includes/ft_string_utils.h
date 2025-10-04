@@ -18,6 +18,7 @@
 int		ft_atoi(const char *str);
 int		ft_atoi_base(char *str, char *base);
 long	ft_atol(const char *str);
+double	ft_atof(const char *str);
 void	ft_free_ft_split(char **str_array);
 char	*ft_itoa(int n);
 char	*ft_itol(long n);
