@@ -12,14 +12,28 @@
 
 #include "minirt.h"
 
-static int	validate_args(int argc, char **argv)
+static int	has_valid_extension(const char *filename, const char *ext)
+{
+	int	filename_len;
+	int	ext_len;
+
+	if (!filename || !ext)
+		return (0);
+	filename_len = ft_strlen(filename);
+	ext_len = ft_strlen(ext);
+	if (filename_len < ext_len)
+		return (0);
+	return (ft_strcmp(filename + filename_len - ext_len, ext) == 0);
+}
+
+static int	validate_arguments(int argc, char **argv)
 {
 	if (argc != 2)
 	{
 		ft_putendl_fd(ERR_USAGE, 2);
 		return (0);
 	}
-	if (!is_valid_extension(argv[1], ".rt"))
+	if (!has_valid_extension(argv[1], ".rt"))
 	{
 		ft_putendl_fd("Error: File must have .rt extension", 2);
 		return (0);
@@ -36,7 +50,7 @@ int	main(int argc, char **argv)
 {
 	t_minirt	minirt;
 
-	if (!validate_args(argc, argv))
+	if (!validate_arguments(argc, argv))
 		return (1);
 	init_minirt(&minirt);
 	if (!parse_scene(argv[1], &minirt.scene))

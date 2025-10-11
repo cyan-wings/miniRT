@@ -12,24 +12,7 @@
 
 #include "minirt.h"
 
-static t_vec3	parse_vector(char *str)
-{
-	char	**components;
-	t_vec3	vec;
-
-	components = ft_split(str, ',');
-	if (!components || !components[0] || !components[1] || !components[2])
-	{
-		if (components)
-			ft_free_array((void **)components);
-		return ((t_vec3){0, 0, 0});
-	}
-	vec.x = ft_atof(components[0]);
-	vec.y = ft_atof(components[1]);
-	vec.z = ft_atof(components[2]);
-	ft_free_array((void **)components);
-	return (vec);
-}
+t_vec3	parse_vector(char *str);
 
 static t_color	parse_color(char *str)
 {

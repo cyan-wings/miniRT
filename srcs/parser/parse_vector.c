@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   parse_vector.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: myeow <myeow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,42 +12,21 @@
 
 #include "minirt.h"
 
-double	degrees_to_radians(double degrees)
+t_vec3	parse_vector(char *str)
 {
-	return (degrees * PI / 180.0);
-}
+	char	**components;
+	t_vec3	vec;
 
-void	error_exit(const char *message)
-{
-	ft_putendl_fd("Error", 2);
-	if (message)
-		ft_putendl_fd((char *)message, 2);
-	exit(1);
-}
-
-void	cleanup_and_exit(t_minirt *minirt, const char *message)
-{
-	if (minirt)
+	components = ft_split(str, ',');
+	if (!components || !components[0] || !components[1] || !components[2])
 	{
-		cleanup_mlx(&minirt->mlx_data);
-		objects_free(&minirt->scene);
+		if (components)
+			ft_free_array((void **)components);
+		return ((t_vec3){0, 0, 0});
 	}
-	error_exit(message);
-}
-
-char	**ft_split_whitespace(char const *s)
-{
-	if (!s)
-		return (NULL);
-	return (ft_split(s, ' '));
-}
-
-double	random_double(void)
-{
-	return ((double)rand() / ((double)RAND_MAX + 1.0));
-}
-
-double	random_double_range(double min, double max)
-{
-	return (min + (max - min) * random_double());
+	vec.x = ft_atof(components[0]);
+	vec.y = ft_atof(components[1]);
+	vec.z = ft_atof(components[2]);
+	ft_free_array((void **)components);
+	return (vec);
 }
