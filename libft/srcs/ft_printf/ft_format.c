@@ -98,17 +98,17 @@ void	ft_format_specifier(t_data *data)
 		ft_printstring(data, va_arg(*data->args, char *));
 	else if (specifier == 'p')
 		ft_printaddr(data, (uintptr_t) va_arg(*data->args, void *),
-				FT_PRINTF_BASE16);
+			FT_PRINTF_BASE16);
 	else if (specifier == 'd' || specifier == 'i')
 		ft_printnbr(data, va_arg(*data->args, int), FT_PRINTF_BASE10, 10);
 	else if (specifier == 'u')
 		ft_printnbr(data, va_arg(*data->args, unsigned int),
-				FT_PRINTF_BASE10, 10);
+			FT_PRINTF_BASE10, 10);
 	else if (specifier == 'x')
 		ft_printnbr(data, va_arg(*data->args, unsigned int),
-				FT_PRINTF_BASE16, 16);
+			FT_PRINTF_BASE16, 16);
 	else if (specifier == 'X')
 		ft_printnbr(data, va_arg(*data->args, unsigned int),
-				FT_PRINTF_BASE16CAPS, 16);
+			FT_PRINTF_BASE16CAPS, 16);
 	return ;
 }

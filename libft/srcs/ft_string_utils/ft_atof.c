@@ -12,6 +12,8 @@
 
 #include "ft_string_utils.h"
 
+int	ft_isspace(int c);
+
 static double	ft_pow_10(int exp)
 {
 	double	result;
@@ -30,42 +32,51 @@ static double	ft_pow_10(int exp)
 	return (result);
 }
 
-double	ft_atof(const char *str)
+static const char	*ignore_spaces(const char *str)
+{
+	if (!str)
+		return (NULL);
+	while (!*str && ft_isspace(*str))
+		++str;
+	return (str);
+}
+
+static double	get_float_from_string(
+	const char *str,
+	double fraction,
+	int decimal_places
+)
 {
 	double	result;
-	double	fraction;
+
+	result = 0.0;
+	while (*str >= '0' && *str <= '9')
+		result = result * 10.0 + (*str++ - '0');
+	if (*str++ == '.')
+	{
+		while (*str >= '0' && *str <= '9')
+		{
+			fraction = fraction * 10.0 + (*str++ - '0');
+			decimal_places++;
+		}
+		result += fraction / ft_pow_10(decimal_places);
+	}
+	return (result);
+}
+
+double	ft_atof(const char *str)
+{
 	int		sign;
-	int		decimal_places;
 
 	if (!str)
 		return (0.0);
-	result = 0.0;
 	sign = 1;
-	while (*str == ' ' || *str == '\t' || *str == '\n')
-		str++;
+	str = ignore_spaces(str);
 	if (*str == '-' || *str == '+')
 	{
 		if (*str == '-')
 			sign = -1;
 		str++;
 	}
-	while (*str >= '0' && *str <= '9')
-	{
-		result = result * 10.0 + (*str - '0');
-		str++;
-	}
-	if (*str == '.')
-	{
-		str++;
-		fraction = 0.0;
-		decimal_places = 0;
-		while (*str >= '0' && *str <= '9')
-		{
-			fraction = fraction * 10.0 + (*str - '0');
-			decimal_places++;
-			str++;
-		}
-		result += fraction / ft_pow_10(decimal_places);
-	}
-	return (result * sign);
+	return (get_float_from_string(str, 0.0, 0) * sign);
 }
