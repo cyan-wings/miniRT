@@ -228,9 +228,9 @@ t_hit		intersect_cylinder(t_ray ray, t_cylinder *cylinder);
 /* Lighting */
 t_color		calculate_lighting(t_hit hit, t_scene *scene, t_ray ray);
 t_color		ambient_light(t_material material, t_ambient ambient);
-t_color		diffuse_light(t_vec3 light_dir, t_vec3 normal, 
+t_color		diffuse_light(t_vec3 light_dir, t_vec3 normal,
 				t_material material, t_color light_color);
-t_color		specular_light(t_vec3 light_dir, t_vec3 view_dir, 
+t_color		specular_light(t_vec3 light_dir, t_vec3 view_dir,
 				t_vec3 normal, t_material material, t_color light_color);
 
 /* Renderer */
@@ -243,7 +243,7 @@ void		object_add(t_scene *scene, t_object_type type, void *data);
 void		objects_free(t_scene *scene);
 
 /* Material */
-t_material	material_create(t_color color, double ambient, 
+t_material	material_create(t_color color, double ambient,
 				double diffuse, double specular, double shininess);
 
 /* MLX utilities */

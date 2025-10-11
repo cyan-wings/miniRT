@@ -93,7 +93,7 @@ void	render_scene(t_minirt *minirt)
 				u = ((double)x + jitter_u) / (WIN_WIDTH - 1);
 				v = ((double)(WIN_HEIGHT - 1 - y) + jitter_v) / (WIN_HEIGHT - 1);
 				ray = camera_get_ray_scattered(&minirt->scene.camera, u, v,
-					jitter_u, jitter_v);
+						jitter_u, jitter_v);
 				sample_color = trace_ray(ray, &minirt->scene, MAX_DEPTH);
 				pixel_color = color_add(pixel_color, sample_color);
 				sample++;
@@ -105,6 +105,6 @@ void	render_scene(t_minirt *minirt)
 		}
 		y++;
 	}
-	mlx_put_image_to_window(minirt->mlx_data.mlx, minirt->mlx_data.win, 
+	mlx_put_image_to_window(minirt->mlx_data.mlx, minirt->mlx_data.win,
 		minirt->mlx_data.img, 0, 0);
 }

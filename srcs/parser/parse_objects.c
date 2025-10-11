@@ -61,7 +61,8 @@ int	parse_sphere(char **tokens, t_scene *scene)
 		return (0);
 	sphere->center = parse_vector(tokens[1]);
 	sphere->radius = ft_atof(tokens[2]) / 2.0;
-	sphere->material = material_create(parse_color(tokens[3]), 0.1, 0.9, 0.9, 32);
+	sphere->material = material_create(
+			parse_color(tokens[3]), 0.1, 0.9, 0.9, 32);
 	object_add(scene, OBJ_SPHERE, sphere);
 	return (1);
 }
@@ -95,7 +96,8 @@ int	parse_cylinder(char **tokens, t_scene *scene)
 	cylinder->axis = ft_vec3_normalize(parse_vector(tokens[2]));
 	cylinder->radius = ft_atof(tokens[3]) / 2.0;
 	cylinder->height = ft_atof(tokens[4]);
-	cylinder->material = material_create(parse_color(tokens[5]), 0.1, 0.9, 0.2, 16);
+	cylinder->material = material_create(
+			parse_color(tokens[5]), 0.1, 0.9, 0.2, 16);
 	object_add(scene, OBJ_CYLINDER, cylinder);
 	return (1);
 }

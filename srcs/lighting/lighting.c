@@ -14,12 +14,16 @@
 
 t_color	ambient_light(t_material material, t_ambient ambient)
 {
-	return (color_multiply(material.color, 
-		color_mult(ambient.color, ambient.ratio)));
+	return (color_multiply(material.color,
+			color_mult(ambient.color, ambient.ratio)));
 }
 
-t_color	diffuse_light(t_vec3 light_dir, t_vec3 normal, 
-	t_material material, t_color light_color)
+t_color	diffuse_light(
+	t_vec3 light_dir,
+	t_vec3 normal,
+	t_material material,
+	t_color light_color
+)
 {
 	double	dot_product;
 	t_color	diffuse;
@@ -31,8 +35,13 @@ t_color	diffuse_light(t_vec3 light_dir, t_vec3 normal,
 	return (color_multiply(material.color, diffuse));
 }
 
-t_color	specular_light(t_vec3 light_dir, t_vec3 view_dir, 
-	t_vec3 normal, t_material material, t_color light_color)
+t_color	specular_light(
+	t_vec3 light_dir,
+	t_vec3 view_dir,
+	t_vec3 normal,
+	t_material material,
+	t_color light_color
+)
 {
 	t_vec3	reflect_dir;
 	double	spec;
@@ -54,8 +63,11 @@ static int	is_in_shadow(t_vec3 point, t_vec3 light_pos, t_scene *scene)
 
 	to_light = ft_vec3_sub(light_pos, point);
 	light_distance = ft_vec3_length(to_light);
-	shadow_ray = ray_create(ft_vec3_add(point, ft_vec3_mult(to_light, EPSILON)), 
-		ft_vec3_normalize(to_light));
+	shadow_ray = ray_create(ft_vec3_add(
+				point,
+				ft_vec3_mult(to_light, EPSILON)
+				),
+			ft_vec3_normalize(to_light));
 	shadow_hit = intersect_scene(shadow_ray, scene);
 	return (shadow_hit.hit && shadow_hit.t < light_distance);
 }
@@ -71,15 +83,16 @@ t_color	calculate_lighting(t_hit hit, t_scene *scene, t_ray ray)
 	final_color = ambient_light(hit.material, scene->ambient);
 	if (is_in_shadow(hit.point, scene->light.position, scene))
 		return (final_color);
-	light_dir = ft_vec3_normalize(ft_vec3_sub(scene->light.position, hit.point));
+	light_dir = ft_vec3_normalize(
+			ft_vec3_sub(scene->light.position, hit.point));
 	view_dir = ft_vec3_normalize(ft_vec3_mult(ray.direction, -1.0));
-	diffuse_color = diffuse_light(light_dir, hit.normal, 
-		hit.material, scene->light.color);
-	specular_color = specular_light(light_dir, view_dir, hit.normal, 
-		hit.material, scene->light.color);
-	final_color = color_add(final_color, 
-		color_mult(diffuse_color, scene->light.brightness));
-	final_color = color_add(final_color, 
-		color_mult(specular_color, scene->light.brightness));
+	diffuse_color = diffuse_light(light_dir, hit.normal,
+			hit.material, scene->light.color);
+	specular_color = specular_light(light_dir, view_dir, hit.normal,
+			hit.material, scene->light.color);
+	final_color = color_add(final_color,
+			color_mult(diffuse_color, scene->light.brightness));
+	final_color = color_add(final_color,
+			color_mult(specular_color, scene->light.brightness));
 	return (final_color);
 }

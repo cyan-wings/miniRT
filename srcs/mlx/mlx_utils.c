@@ -23,8 +23,8 @@ int	init_mlx(t_mlx_data *data)
 	data->img = mlx_new_image(data->mlx, WIN_WIDTH, WIN_HEIGHT);
 	if (!data->img)
 		return (0);
-	data->addr = mlx_get_data_addr(data->img, &data->bits_per_pixel, 
-		&data->line_length, &data->endian);
+	data->addr = mlx_get_data_addr(data->img, &data->bits_per_pixel,
+			&data->line_length, &data->endian);
 	if (!data->addr)
 		return (0);
 	return (1);

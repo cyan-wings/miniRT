@@ -35,8 +35,13 @@ void	objects_free(t_scene *scene)
 	scene->object_count = 0;
 }
 
-t_material	material_create(t_color color, double ambient, 
-	double diffuse, double specular, double shininess)
+t_material	material_create(
+	t_color color,
+	double ambient,
+	double diffuse,
+	double specular,
+	double shininess
+)
 {
 	t_material	material;
 

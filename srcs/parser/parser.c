@@ -58,7 +58,7 @@ int	parse_scene(const char *filename, t_scene *scene)
 	{
 		line = get_next_line(fd);
 		if (!line)
-			break;
+			break ;
 		result = parse_line(line, scene);
 		free(line);
 	}
