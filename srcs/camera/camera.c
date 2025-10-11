@@ -12,6 +12,8 @@
 
 #include "minirt.h"
 
+double	ft_deg_to_rad(double deg);
+
 void	camera_init(t_camera *camera)
 {
 	t_vec3	world_up;
@@ -21,7 +23,7 @@ void	camera_init(t_camera *camera)
 	double	max_scatter;
 
 	camera->aspect_ratio = (double)WIN_WIDTH / (double)WIN_HEIGHT;
-	theta = degrees_to_radians(camera->fov);
+	theta = ft_deg_to_rad(camera->fov);
 	half_height = tan(theta / 2.0);
 	half_width = camera->aspect_ratio * half_height;
 	camera->viewport_height = 2.0 * half_height;
@@ -36,7 +38,7 @@ void	camera_init(t_camera *camera)
 	camera->up = ft_vec3_normalize(ft_vec3_cross(camera->right, camera->direction));
 	if (camera->scatter_angle < 0.0)
 		camera->scatter_angle = 0.0;
-	max_scatter = degrees_to_radians(MAX_SCATTER_ANGLE);
+	max_scatter = ft_deg_to_rad(MAX_SCATTER_ANGLE);
 	if (camera->scatter_angle > max_scatter)
 		camera->scatter_angle = max_scatter;
 	if (camera->rays_per_pixel < 1)

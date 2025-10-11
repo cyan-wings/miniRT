@@ -227,11 +227,6 @@ t_hit		intersect_cylinder(t_ray ray, t_cylinder *cylinder);
 
 /* Lighting */
 t_color		calculate_lighting(t_hit hit, t_scene *scene, t_ray ray);
-t_color		ambient_light(t_material material, t_ambient ambient);
-t_color		diffuse_light(t_vec3 light_dir, t_vec3 normal,
-				t_material material, t_color light_color);
-t_color		specular_light(t_vec3 light_dir, t_vec3 view_dir,
-				t_vec3 normal, t_material material, t_color light_color);
 
 /* Renderer */
 void		render_scene(t_minirt *minirt);
@@ -257,8 +252,6 @@ void		error_exit(const char *message);
 void		cleanup_and_exit(t_minirt *minirt, const char *message);
 
 /* Utilities */
-double		degrees_to_radians(double degrees);
-int			is_valid_extension(const char *filename, const char *ext);
 char		**ft_split_whitespace(char const *s);
 double		random_double(void);
 double		random_double_range(double min, double max);
