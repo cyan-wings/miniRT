@@ -22,15 +22,7 @@ void	put_pixel(t_mlx_data *data, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-static t_ray	calc_reflected_ray(t_hit *hit, t_vec3 reflected_dir)
-{
-	t_vec3	offset;
-	t_vec3	reflected_origin;
-
-	offset = ft_vec3_mult(hit->normal, EPSILON);
-	reflected_origin = ft_vec3_add(hit->point, offset);
-	return (ray_create(reflected_origin, reflected_dir));
-}
+t_ray	calc_reflected_ray(t_hit *hit, t_vec3 reflected_dir);
 
 static t_color	trace_ray(t_ray ray, t_scene *scene, int depth)
 {
@@ -53,6 +45,20 @@ static t_color	trace_ray(t_ray ray, t_scene *scene, int depth)
 	return (color_add(local_color, reflected_color));
 }
 
+static void	get_jitters(int rpp, double *jitter_u, double *jitter_v)
+{
+	if (rpp == 1)
+	{
+		*jitter_u = 0.5;
+		*jitter_v = 0.5;
+	}
+	else
+	{
+		*jitter_u = random_double();
+		*jitter_v = random_double();
+	}
+}
+
 static t_color	get_pixel_color(int rpp, int x, int y, t_scene *scene)
 {
 	int		sample;
@@ -63,19 +69,12 @@ static t_color	get_pixel_color(int rpp, int x, int y, t_scene *scene)
 
 	sample = -1;
 	pixel_color = (t_color){0, 0, 0};
+	get_jitters(rpp, &jitter_u, &jitter_v);
 	while (++sample < rpp)
 	{
-		if (rpp == 1)
-		{
-			jitter_u = 0.5;
-			jitter_v = 0.5;
-		}
-		else
-		{
-			jitter_u = random_double();
-			jitter_v = random_double();
-		}
-		ray = camera_get_ray_scattered(&scene->camera, x, y,
+		ray = camera_get_ray_scattered(&scene->camera, camera_base_direction(
+					&scene->camera, (x + jitter_u) / (WIN_WIDTH - 1),
+					(WIN_HEIGHT - 1.0 - y + jitter_v) / (WIN_HEIGHT - 1)),
 				jitter_u, jitter_v);
 		pixel_color = color_add(pixel_color, trace_ray(ray, scene, MAX_DEPTH));
 	}

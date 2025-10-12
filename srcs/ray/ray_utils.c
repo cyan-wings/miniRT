@@ -25,3 +25,13 @@ t_vec3	ray_at(t_ray ray, double t)
 {
 	return (ft_vec3_add(ray.origin, ft_vec3_mult(ray.direction, t)));
 }
+
+t_ray	calc_reflected_ray(t_hit *hit, t_vec3 reflected_dir)
+{
+	t_vec3	offset;
+	t_vec3	reflected_origin;
+
+	offset = ft_vec3_mult(hit->normal, EPSILON);
+	reflected_origin = ft_vec3_add(hit->point, offset);
+	return (ray_create(reflected_origin, reflected_dir));
+}

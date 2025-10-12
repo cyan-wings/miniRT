@@ -50,7 +50,7 @@ void	camera_init(t_camera *camera)
 		camera->rays_per_pixel = MAX_RAYS_PER_PIXEL;
 }
 
-static t_vec3	camera_base_direction(t_camera *camera, double u, double v)
+t_vec3	camera_base_direction(t_camera *camera, double u, double v)
 {
 	t_vec3	horizontal;
 	t_vec3	vertical;
@@ -67,26 +67,15 @@ static t_vec3	camera_base_direction(t_camera *camera, double u, double v)
 	return (ft_vec3_sub(direction, camera->position));
 }
 
-t_ray	camera_get_ray(t_camera *camera, double u, double v)
-{
-	return (camera_get_ray_scattered(camera, u, v, 0.5, 0.5));
-}
-
-t_ray	camera_get_ray_scattered(t_camera *camera, double x, double y,
+t_ray	camera_get_ray_scattered(t_camera *camera, t_vec3 direction,
 	double jitter_u, double jitter_v)
 {
-	t_vec3	direction;
 	t_vec3	offset;
 	double	angle_x;
 	double	angle_y;
 	double	signed_u;
 	double	signed_v;
-	double	u;
-	double	v;
 
-	u = (x + jitter_u) / (WIN_WIDTH - 1);
-	v = (WIN_HEIGHT - 1.0 - y + jitter_v) / (WIN_HEIGHT - 1);
-	direction = camera_base_direction(camera, u, v);
 	if (camera->scatter_angle > 0.0)
 	{
 		signed_u = (2.0 * jitter_u) - 1.0;
