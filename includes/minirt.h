@@ -226,9 +226,9 @@ t_vec3		ray_at(t_ray ray, double t);
 
 /* Camera */
 void		camera_init(t_camera *camera);
-t_vec3	camera_base_direction(t_camera *camera, double u, double v);
-t_ray	camera_get_ray_scattered(t_camera *camera, t_vec3 direction,
-		double jitter_u, double jitter_v);
+t_vec3		camera_base_direction(t_camera *camera, double u, double v);
+t_ray		camera_get_ray_scattered(t_camera *camera, t_vec3 direction,
+				double jitter_u, double jitter_v);
 
 /* Collision detection */
 t_hit		intersect_scene(t_ray ray, t_scene *scene);

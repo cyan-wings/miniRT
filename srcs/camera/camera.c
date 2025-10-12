@@ -14,13 +14,27 @@
 
 double	ft_deg_to_rad(double deg);
 
+static void	camera_init_helper(t_camera *camera)
+{
+	double	max_scatter;
+
+	if (camera->scatter_angle < 0.0)
+		camera->scatter_angle = 0.0;
+	max_scatter = ft_deg_to_rad(MAX_SCATTER_ANGLE);
+	if (camera->scatter_angle > max_scatter)
+		camera->scatter_angle = max_scatter;
+	if (camera->rays_per_pixel < 1)
+		camera->rays_per_pixel = DEFAULT_RAYS_PER_PIXEL;
+	if (camera->rays_per_pixel > MAX_RAYS_PER_PIXEL)
+		camera->rays_per_pixel = MAX_RAYS_PER_PIXEL;
+}
+
 void	camera_init(t_camera *camera)
 {
 	t_vec3	world_up;
 	double	theta;
 	double	half_height;
 	double	half_width;
-	double	max_scatter;
 
 	camera->aspect_ratio = (double)WIN_WIDTH / (double)WIN_HEIGHT;
 	theta = ft_deg_to_rad(camera->fov);
@@ -39,15 +53,7 @@ void	camera_init(t_camera *camera)
 	}
 	camera->up = ft_vec3_normalize(ft_vec3_cross(camera->right,
 				camera->direction));
-	if (camera->scatter_angle < 0.0)
-		camera->scatter_angle = 0.0;
-	max_scatter = ft_deg_to_rad(MAX_SCATTER_ANGLE);
-	if (camera->scatter_angle > max_scatter)
-		camera->scatter_angle = max_scatter;
-	if (camera->rays_per_pixel < 1)
-		camera->rays_per_pixel = DEFAULT_RAYS_PER_PIXEL;
-	if (camera->rays_per_pixel > MAX_RAYS_PER_PIXEL)
-		camera->rays_per_pixel = MAX_RAYS_PER_PIXEL;
+	camera_init_helper(camera);
 }
 
 t_vec3	camera_base_direction(t_camera *camera, double u, double v)
