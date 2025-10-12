@@ -36,7 +36,6 @@ void	objects_free(t_scene *scene)
 }
 
 t_material	material_create(
-	t_color color,
 	double ambient,
 	double diffuse,
 	double specular,
@@ -45,7 +44,6 @@ t_material	material_create(
 {
 	t_material	material;
 
-	material.color = color;
 	material.ambient = ambient;
 	material.diffuse = diffuse;
 	material.specular = specular;

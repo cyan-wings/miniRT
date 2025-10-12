@@ -248,7 +248,7 @@ void		object_add(t_scene *scene, t_object_type type, void *data);
 void		objects_free(t_scene *scene);
 
 /* Material */
-t_material	material_create(t_color color, double ambient,
+t_material	material_create(double ambient,
 				double diffuse, double specular, double shininess);
 
 /* MLX utilities */
