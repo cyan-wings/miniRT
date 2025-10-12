@@ -102,6 +102,16 @@ typedef struct s_sphere
 	t_material	material;
 }	t_sphere;
 
+/* Sphere intersection variables */
+typedef struct s_sphere_intersect
+{
+	t_vec3 oc;
+	double a;
+	double b;
+	double c;
+	double discriminant;
+}	t_sphere_intersect;
+
 /* Plane structure */
 typedef struct s_plane
 {

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_vec3_length.c                                   :+:      :+:    :+:   */
+/*   ft_vec3_length_squared.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: myeow <myeow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,7 @@
 
 #include "ft_math_utils.h"
 
-double	ft_vec3_length(t_vec3 v)
+double	ft_vec3_length_squared(t_vec3 v)
 {
-	return (ft_sqrt(ft_vec3_length_squared(v)));
+	return (v.x * v.x + v.y * v.y + v.z * v.z);
 }

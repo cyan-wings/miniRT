@@ -118,6 +118,7 @@ t_vec3				ft_vec3_div(t_vec3 v, double t);
 double				ft_vec3_dot(t_vec3 a, t_vec3 b);
 t_vec3				ft_vec3_cross(t_vec3 a, t_vec3 b);
 double				ft_vec3_length(t_vec3 v);
+double				ft_vec3_length_squared(t_vec3 v);
 t_vec3				ft_vec3_normalize(t_vec3 v);
 t_vec3				ft_vec3_reflect(t_vec3 v, t_vec3 n);
 

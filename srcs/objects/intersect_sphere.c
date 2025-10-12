@@ -12,28 +12,32 @@
 
 #include "minirt.h"
 
+static void	init_data(t_sphere_intersect *data, t_ray *ray, t_sphere *sphere)
+{
+	data->oc = ft_vec3_sub(ray->origin, sphere->center);
+	data->a = ft_vec3_dot(ray->direction, ray->direction);
+	data->b = 2.0 * ft_vec3_dot(data->oc, ray->direction);
+	data->c = ft_vec3_dot(data->oc, data->oc)
+		- sphere->radius * sphere->radius;
+	data->discriminant = data->b * data->b - 4 * data->a * data->c;
+}
+
 t_hit	intersect_sphere(t_ray ray, t_sphere *sphere)
 {
-	t_hit	hit;
-	t_vec3	oc;
-	double	a;
-	double	b;
-	double	c;
-	double	discriminant;
-	double	t;
+	t_hit				hit;
+	t_sphere_intersect	data;
+	double				sqrtd;
+	double				t;
 
 	ft_memset(&hit, 0, sizeof(t_hit));
-	oc = ft_vec3_sub(ray.origin, sphere->center);
-	a = ft_vec3_dot(ray.direction, ray.direction);
-	b = 2.0 * ft_vec3_dot(oc, ray.direction);
-	c = ft_vec3_dot(oc, oc) - sphere->radius * sphere->radius;
-	discriminant = b * b - 4 * a * c;
-	if (discriminant < 0)
+	init_data(&data, &ray, sphere);
+	if (data.discriminant < 0)
 		return (hit);
-	t = (-b - ft_sqrt(discriminant)) / (2.0 * a);
+	sqrtd = ft_sqrt(data.discriminant);
+	t = (-data.b - sqrtd) / (2.0 * data.a);
 	if (t < EPSILON)
 	{
-		t = (-b + ft_sqrt(discriminant)) / (2.0 * a);
+		t = (-data.b + sqrtd) / (2.0 * data.a);
 		if (t < EPSILON)
 			return (hit);
 	}
