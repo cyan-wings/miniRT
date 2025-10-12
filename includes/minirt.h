@@ -105,11 +105,12 @@ typedef struct s_sphere
 /* Sphere intersection variables */
 typedef struct s_sphere_intersect
 {
-	t_vec3 oc;
-	double a;
-	double b;
-	double c;
-	double discriminant;
+	double	a;
+	double	b;
+	double	c;
+	double	discriminant;
+	double	sqrtd;
+	double	t;
 }	t_sphere_intersect;
 
 /* Plane structure */
@@ -240,7 +241,6 @@ t_color		calculate_lighting(t_hit hit, t_scene *scene, t_ray ray);
 
 /* Renderer */
 void		render_scene(t_minirt *minirt);
-t_color		trace_ray(t_ray ray, t_scene *scene, int depth);
 void		put_pixel(t_mlx_data *data, int x, int y, int color);
 
 /* Object management */

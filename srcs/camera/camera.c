@@ -29,13 +29,16 @@ void	camera_init(t_camera *camera)
 	camera->viewport_height = 2.0 * half_height;
 	camera->viewport_width = 2.0 * half_width;
 	world_up = (t_vec3){0, 1, 0};
-	camera->right = ft_vec3_normalize(ft_vec3_cross(camera->direction, world_up));
+	camera->right = ft_vec3_normalize(ft_vec3_cross(camera->direction,
+				world_up));
 	if (ft_vec3_length(camera->right) < EPSILON)
 	{
 		world_up = (t_vec3){0, 0, 1};
-		camera->right = ft_vec3_normalize(ft_vec3_cross(camera->direction, world_up));
+		camera->right = ft_vec3_normalize(ft_vec3_cross(camera->direction,
+					world_up));
 	}
-	camera->up = ft_vec3_normalize(ft_vec3_cross(camera->right, camera->direction));
+	camera->up = ft_vec3_normalize(ft_vec3_cross(camera->right,
+				camera->direction));
 	if (camera->scatter_angle < 0.0)
 		camera->scatter_angle = 0.0;
 	max_scatter = ft_deg_to_rad(MAX_SCATTER_ANGLE);
@@ -69,7 +72,7 @@ t_ray	camera_get_ray(t_camera *camera, double u, double v)
 	return (camera_get_ray_scattered(camera, u, v, 0.5, 0.5));
 }
 
-t_ray	camera_get_ray_scattered(t_camera *camera, double u, double v,
+t_ray	camera_get_ray_scattered(t_camera *camera, double x, double y,
 	double jitter_u, double jitter_v)
 {
 	t_vec3	direction;
@@ -78,7 +81,11 @@ t_ray	camera_get_ray_scattered(t_camera *camera, double u, double v,
 	double	angle_y;
 	double	signed_u;
 	double	signed_v;
+	double	u;
+	double	v;
 
+	u = (x + jitter_u) / (WIN_WIDTH - 1);
+	v = (WIN_HEIGHT - 1.0 - y + jitter_v) / (WIN_HEIGHT - 1);
 	direction = camera_base_direction(camera, u, v);
 	if (camera->scatter_angle > 0.0)
 	{

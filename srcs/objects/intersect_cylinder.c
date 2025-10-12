@@ -37,41 +37,44 @@ static t_hit	create_cylinder_hit(t_ray ray, t_cylinder *cyl, double t)
 	hit.point = ray_at(ray, t);
 	to_point = ft_vec3_sub(hit.point, cyl->center);
 	projection = ft_vec3_dot(to_point, cyl->axis);
-	projection_point = ft_vec3_add(cyl->center, ft_vec3_mult(cyl->axis, projection));
+	projection_point = ft_vec3_add(cyl->center,
+			ft_vec3_mult(cyl->axis, projection));
 	hit.normal = ft_vec3_normalize(ft_vec3_sub(hit.point, projection_point));
 	hit.material = cyl->material;
 	return (hit);
 }
 
-t_hit	intersect_cylinder(t_ray ray, t_cylinder *cylinder)
+static void	init_data(t_sphere_intersect *data, t_ray *ray,
+	t_cylinder *cylinder)
 {
-	t_hit	hit;
-	t_vec3	oc;
 	t_vec3	cross_dir_axis;
 	t_vec3	cross_oc_axis;
-	double	a;
-	double	b;
-	double	c;
-	double	discriminant;
-	double	t;
+	t_vec3	oc;
 
-	ft_memset(&hit, 0, sizeof(t_hit));
-	oc = ft_vec3_sub(ray.origin, cylinder->center);
-	cross_dir_axis = ft_vec3_cross(ray.direction, cylinder->axis);
+	oc = ft_vec3_sub(ray->origin, cylinder->center);
+	cross_dir_axis = ft_vec3_cross(ray->direction, cylinder->axis);
 	cross_oc_axis = ft_vec3_cross(oc, cylinder->axis);
-	a = ft_vec3_dot(cross_dir_axis, cross_dir_axis);
-	b = 2.0 * ft_vec3_dot(cross_dir_axis, cross_oc_axis);
-	c = ft_vec3_dot(cross_oc_axis, cross_oc_axis) - 
-		(cylinder->radius * cylinder->radius);
-	discriminant = b * b - 4 * a * c;
-	if (discriminant < 0 || ft_abs(a) < EPSILON)
-		return (hit);
-	t = (-b - ft_sqrt(discriminant)) / (2.0 * a);
-	if (t < EPSILON || !check_cylinder_caps(ray, cylinder, t))
+	data->a = ft_vec3_dot(cross_dir_axis, cross_dir_axis);
+	data->b = 2.0 * ft_vec3_dot(cross_dir_axis, cross_oc_axis);
+	data->c = ft_vec3_dot(cross_oc_axis, cross_oc_axis)
+		- (cylinder->radius * cylinder->radius);
+	data->discriminant = data->b * data->b - 4 * data->a * data->c;
+}
+
+t_hit	intersect_cylinder(t_ray ray, t_cylinder *cylinder)
+{
+	t_sphere_intersect	data;
+
+	init_data(&data, &ray, cylinder);
+	if (data.discriminant < 0 || ft_abs(data.a) < EPSILON)
+		return ((t_hit){});
+	data.sqrtd = ft_sqrt(data.discriminant);
+	data.t = (-data.b - data.sqrtd) / (2.0 * data.a);
+	if (data.t < EPSILON || !check_cylinder_caps(ray, cylinder, data.t))
 	{
-		t = (-b + ft_sqrt(discriminant)) / (2.0 * a);
-		if (t < EPSILON || !check_cylinder_caps(ray, cylinder, t))
-			return (hit);
+		data.t = (-data.b + data.sqrtd) / (2.0 * data.a);
+		if (data.t < EPSILON || !check_cylinder_caps(ray, cylinder, data.t))
+			return ((t_hit){});
 	}
-	return (create_cylinder_hit(ray, cylinder, t));
+	return (create_cylinder_hit(ray, cylinder, data.t));
 }
