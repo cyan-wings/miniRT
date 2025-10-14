@@ -51,6 +51,16 @@ t_color	color_multiply(t_color a, t_color b)
 	return (result);
 }
 
+t_color	color_clamp(t_color a, double low, double high)
+{
+	t_color	result;
+
+	result.r = clamp(a.r, low, high);
+	result.g = clamp(a.g, low, high);
+	result.b = clamp(a.b, low, high);
+	return (result);
+}
+
 int	color_to_int(t_color c)
 {
 	int	r;

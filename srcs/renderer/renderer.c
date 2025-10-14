@@ -42,7 +42,9 @@ static t_color	trace_ray(t_ray ray, t_scene *scene, int depth)
 		return (local_color);
 	reflected_color = trace_ray(calc_reflected_ray(&hit, reflected_dir),
 			scene, depth - 1);
-	return (color_add(local_color, color_mult(reflected_color, 0.5)));
+	return (color_add(local_color, color_mult(color_multiply(reflected_color, hit.material.color), 0.5)));
+	// return (color_add(local_color, color_multiply(color_clamp(reflected_color, 0, 1), hit.material.color)));
+	// return (color_add(color_mult(local_color, (1.0 - hit.material.shininess)), color_mult(reflected_color, hit.material.shininess)));
 }
 
 static void	get_jitters(int rpp, double *jitter_u, double *jitter_v)
