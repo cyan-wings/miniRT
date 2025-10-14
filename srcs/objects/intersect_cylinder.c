@@ -5,76 +5,158 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: myeow <myeow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/01 00:00:00 by myeow             #+#    #+#             */
-/*   Updated: 2025/10/01 00:00:00 by myeow            ###   ########.fr       */
+/*   Created: 2025/10/14 00:00:00 by myeow             #+#    #+#             */
+/*   Updated: 2025/10/14 00:00:00 by myeow            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 
-static int	check_cylinder_caps(t_ray ray, t_cylinder *cyl, double t)
+typedef struct s_cylinder_intersect
+{
+	t_vec3	axis_n;
+	double	half_h;
+	double	a;
+	double	b;
+	double	c;
+	double	discriminant;
+	double	sqrtd;
+	double	t_side;
+	double	t_cap;
+	double	denom;
+	t_hit	best_hit;
+}	t_cylinder_intersect;
+
+static void	init_cylinder_data(t_cylinder_intersect *d, t_ray *ray,
+		t_cylinder *cyl)
+{
+	t_vec3	oc;
+	t_vec3	cross_dir_axis;
+	t_vec3	cross_oc_axis;
+
+	ft_memset(d, 0, sizeof(t_cylinder_intersect));
+	d->axis_n = ft_vec3_normalize(cyl->axis);
+	d->half_h = cyl->height * 0.5;
+	oc = ft_vec3_sub(ray->origin, cyl->center);
+	cross_dir_axis = ft_vec3_cross(ray->direction, d->axis_n);
+	cross_oc_axis = ft_vec3_cross(oc, d->axis_n);
+	d->a = ft_vec3_dot(cross_dir_axis, cross_dir_axis);
+	d->b = 2.0 * ft_vec3_dot(cross_dir_axis, cross_oc_axis);
+	d->c = ft_vec3_dot(cross_oc_axis, cross_oc_axis)
+		- (cyl->radius * cyl->radius);
+	d->discriminant = d->b * d->b - 4.0 * d->a * d->c;
+	ft_memset(&d->best_hit, 0, sizeof(t_hit));
+}
+
+static int	check_cylinder_caps_with_axis(t_ray ray, t_cylinder *cyl,
+		double t, t_vec3 axis_n)
 {
 	t_vec3	point;
 	t_vec3	to_point;
 	double	projection;
+	double	half_h;
 
 	point = ray_at(ray, t);
 	to_point = ft_vec3_sub(point, cyl->center);
-	projection = ft_vec3_dot(to_point, cyl->axis);
-	return (projection >= 0 && projection <= cyl->height);
+	projection = ft_vec3_dot(to_point, axis_n);
+	half_h = cyl->height * 0.5;
+	return (projection >= -half_h && projection <= half_h);
 }
 
-static t_hit	create_cylinder_hit(t_ray ray, t_cylinder *cyl, double t)
+static t_hit	create_cylinder_side_hit(t_ray ray, t_cylinder *cyl,
+		double t, t_vec3 axis_n)
 {
 	t_hit	hit;
 	t_vec3	to_point;
-	t_vec3	projection_point;
-	double	projection;
+	t_vec3	proj_point;
+	double	proj;
 
 	ft_memset(&hit, 0, sizeof(t_hit));
 	hit.hit = 1;
 	hit.t = t;
 	hit.point = ray_at(ray, t);
 	to_point = ft_vec3_sub(hit.point, cyl->center);
-	projection = ft_vec3_dot(to_point, cyl->axis);
-	projection_point = ft_vec3_add(cyl->center,
-			ft_vec3_mult(cyl->axis, projection));
-	hit.normal = ft_vec3_normalize(ft_vec3_sub(hit.point, projection_point));
+	proj = ft_vec3_dot(to_point, axis_n);
+	proj_point = ft_vec3_add(cyl->center, ft_vec3_mult(axis_n, proj));
+	hit.normal = ft_vec3_normalize(ft_vec3_sub(hit.point, proj_point));
 	hit.material = cyl->material;
 	return (hit);
 }
 
-static void	init_data(t_sphere_intersect *data, t_ray *ray,
-	t_cylinder *cylinder)
+static t_hit	create_cylinder_cap_hit(t_ray ray, t_cylinder *cyl,
+		double t, int top)
 {
-	t_vec3	cross_dir_axis;
-	t_vec3	cross_oc_axis;
-	t_vec3	oc;
+	t_hit	hit;
+	t_vec3	norm;
 
-	oc = ft_vec3_sub(ray->origin, cylinder->center);
-	cross_dir_axis = ft_vec3_cross(ray->direction, cylinder->axis);
-	cross_oc_axis = ft_vec3_cross(oc, cylinder->axis);
-	data->a = ft_vec3_dot(cross_dir_axis, cross_dir_axis);
-	data->b = 2.0 * ft_vec3_dot(cross_dir_axis, cross_oc_axis);
-	data->c = ft_vec3_dot(cross_oc_axis, cross_oc_axis)
-		- (cylinder->radius * cylinder->radius);
-	data->discriminant = data->b * data->b - 4 * data->a * data->c;
+	ft_memset(&hit, 0, sizeof(t_hit));
+	hit.hit = 1;
+	hit.t = t;
+	hit.point = ray_at(ray, t);
+	norm = ft_vec3_normalize(cyl->axis);
+	if (top < 0)
+		norm = ft_vec3_mult(norm, -1.0);
+	hit.normal = norm;
+	hit.material = cyl->material;
+	return (hit);
 }
 
-t_hit	intersect_cylinder(t_ray ray, t_cylinder *cylinder)
+static void	intersect_caps(t_ray ray, t_cylinder *cyl, t_cylinder_intersect *d)
 {
-	t_sphere_intersect	data;
+	t_vec3	cap_center;
+	t_vec3	p;
+	double	dist;
 
-	init_data(&data, &ray, cylinder);
-	if (data.discriminant < 0 || ft_abs(data.a) < EPSILON)
-		return ((t_hit){});
-	data.sqrtd = ft_sqrt(data.discriminant);
-	data.t = (-data.b - data.sqrtd) / (2.0 * data.a);
-	if (data.t < EPSILON || !check_cylinder_caps(ray, cylinder, data.t))
+	d->denom = ft_vec3_dot(ray.direction, d->axis_n);
+	if (ft_abs(d->denom) < EPSILON)
+		return ;
+	cap_center = ft_vec3_add(cyl->center,
+			ft_vec3_mult(d->axis_n, d->half_h));
+	d->t_cap = ft_vec3_dot(ft_vec3_sub(cap_center, ray.origin), d->axis_n)
+		/ d->denom;
+	if (d->t_cap > EPSILON)
 	{
-		data.t = (-data.b + data.sqrtd) / (2.0 * data.a);
-		if (data.t < EPSILON || !check_cylinder_caps(ray, cylinder, data.t))
-			return ((t_hit){});
+		p = ray_at(ray, d->t_cap);
+		dist = ft_vec3_length(ft_vec3_sub(p, cap_center));
+		if (dist <= cyl->radius + EPSILON
+			&& (!d->best_hit.hit || d->t_cap < d->best_hit.t))
+			d->best_hit = create_cylinder_cap_hit(ray, cyl, d->t_cap, +1);
 	}
-	return (create_cylinder_hit(ray, cylinder, data.t));
+	cap_center = ft_vec3_sub(cyl->center,
+			ft_vec3_mult(d->axis_n, d->half_h));
+	d->t_cap = ft_vec3_dot(ft_vec3_sub(cap_center, ray.origin), d->axis_n)
+		/ d->denom;
+	if (d->t_cap > EPSILON)
+	{
+		p = ray_at(ray, d->t_cap);
+		dist = ft_vec3_length(ft_vec3_sub(p, cap_center));
+		if (dist <= cyl->radius + EPSILON
+			&& (!d->best_hit.hit || d->t_cap < d->best_hit.t))
+			d->best_hit = create_cylinder_cap_hit(ray, cyl, d->t_cap, -1);
+	}
+}
+
+t_hit	intersect_cylinder(t_ray ray, t_cylinder *cyl)
+{
+	t_cylinder_intersect	d;
+
+	init_cylinder_data(&d, &ray, cyl);
+	if (!(d.discriminant < 0.0 || ft_abs(d.a) < EPSILON))
+	{
+		d.sqrtd = ft_sqrt(d.discriminant);
+		d.t_side = (-d.b - d.sqrtd) / (2.0 * d.a);
+		if (d.t_side > EPSILON
+			&& check_cylinder_caps_with_axis(ray, cyl, d.t_side, d.axis_n))
+			d.best_hit = create_cylinder_side_hit(ray, cyl, d.t_side, d.axis_n);
+		else
+		{
+			d.t_side = (-d.b + d.sqrtd) / (2.0 * d.a);
+			if (d.t_side > EPSILON
+				&& check_cylinder_caps_with_axis(ray, cyl, d.t_side, d.axis_n))
+				d.best_hit = create_cylinder_side_hit(ray, cyl, d.t_side,
+						d.axis_n);
+		}
+	}
+	intersect_caps(ray, cyl, &d);
+	return (d.best_hit);
 }
