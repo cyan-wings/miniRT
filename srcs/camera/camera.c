@@ -92,5 +92,6 @@ t_ray	camera_get_ray_scattered(t_camera *camera, t_vec3 direction,
 				ft_vec3_mult(camera->up, tan(angle_y)));
 		direction = ft_vec3_add(direction, offset);
 	}
+	direction = ft_vec3_normalize(direction);
 	return (ray_create(camera->position, direction));
 }

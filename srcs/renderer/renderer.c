@@ -69,16 +69,16 @@ static t_color	get_pixel_color(int rpp, int x, int y, t_scene *scene)
 
 	sample = -1;
 	pixel_color = (t_color){0, 0, 0};
-	get_jitters(rpp, &jitter_u, &jitter_v);
 	while (++sample < rpp)
 	{
+		get_jitters(rpp, &jitter_u, &jitter_v);
 		ray = camera_get_ray_scattered(&scene->camera, camera_base_direction(
 					&scene->camera, (x + jitter_u) / (WIN_WIDTH - 1),
 					(WIN_HEIGHT - 1.0 - y + jitter_v) / (WIN_HEIGHT - 1)),
 				jitter_u, jitter_v);
 		pixel_color = color_add(pixel_color, trace_ray(ray, scene, MAX_DEPTH));
 	}
-	return (pixel_color);
+	return (color_mult(pixel_color, 1/(double)rpp));
 }
 
 void	render_scene(t_minirt *minirt)
@@ -86,21 +86,19 @@ void	render_scene(t_minirt *minirt)
 	int		x;
 	int		y;
 	int		rpp;
-	double	inv_samples;
 	int		color_int;
 
 	y = 0;
 	rpp = minirt->scene.camera.rays_per_pixel;
 	if (rpp < 1)
 		rpp = 1;
-	inv_samples = 1.0 / (double)rpp;
 	while (y < WIN_HEIGHT)
 	{
 		x = 0;
 		while (x < WIN_WIDTH)
 		{
-			color_int = color_to_int(color_mult(get_pixel_color(rpp, x, y,
-							&minirt->scene), inv_samples));
+			color_int = color_to_int(get_pixel_color(rpp, x, y,
+							&minirt->scene));
 			put_pixel(&minirt->mlx_data, x, y, color_int);
 			x++;
 		}
