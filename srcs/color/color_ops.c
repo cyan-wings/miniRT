@@ -25,9 +25,9 @@ t_color	color_add(t_color a, t_color b)
 {
 	t_color	result;
 
-	result.r = clamp(a.r + b.r, 0.0, 1.0);
-	result.g = clamp(a.g + b.g, 0.0, 1.0);
-	result.b = clamp(a.b + b.b, 0.0, 1.0);
+	result.r = a.r + b.r;
+	result.g = a.g + b.g;
+	result.b = a.b + b.b;
 	return (result);
 }
 
@@ -35,9 +35,9 @@ t_color	color_mult(t_color c, double t)
 {
 	t_color	result;
 
-	result.r = clamp(c.r * t, 0.0, 1.0);
-	result.g = clamp(c.g * t, 0.0, 1.0);
-	result.b = clamp(c.b * t, 0.0, 1.0);
+	result.r = c.r * t;
+	result.g = c.g * t;
+	result.b = c.b * t;
 	return (result);
 }
 
@@ -48,6 +48,16 @@ t_color	color_multiply(t_color a, t_color b)
 	result.r = a.r * b.r;
 	result.g = a.g * b.g;
 	result.b = a.b * b.b;
+	return (result);
+}
+
+t_color	color_clamp(t_color a, double low, double high)
+{
+	t_color	result;
+
+	result.r = clamp(a.r, low, high);
+	result.g = clamp(a.g, low, high);
+	result.b = clamp(a.b, low, high);
 	return (result);
 }
 
