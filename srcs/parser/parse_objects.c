@@ -44,8 +44,17 @@ int	parse_sphere(char **tokens, t_scene *scene)
 		return (0);
 	sphere->center = parse_vector(tokens[1]);
 	sphere->radius = ft_atof(tokens[2]) / 2.0;
-	sphere->material = material_create(0.1, 0.9, 0.9, 32);
-	sphere->material.color = parse_color(tokens[3]);
+	if (tokens[4] && ft_strcmp(tokens[4], "glass") == 0)
+	{
+		double refr_idx = tokens[5] ? ft_atof(tokens[5]) : 1.5;
+		double fuzz = tokens[6] ? ft_atof(tokens[6]) : 0.0;
+		sphere->material = material_create_glass(parse_color(tokens[3]), refr_idx, fuzz);
+	}
+	else
+	{
+		sphere->material = material_create(0.1, 0.9, 0.9, 32);
+		sphere->material.color = parse_color(tokens[3]);
+	}
 	object_add(scene, OBJ_SPHERE, sphere);
 	return (1);
 }
@@ -61,8 +70,17 @@ int	parse_plane(char **tokens, t_scene *scene)
 		return (0);
 	plane->point = parse_vector(tokens[1]);
 	plane->normal = ft_vec3_normalize(parse_vector(tokens[2]));
-	plane->material = material_create(0.1, 0.9, 0.0, 0);
-	plane->material.color = parse_color(tokens[3]);
+	if (tokens[4] && ft_strcmp(tokens[4], "glass") == 0)
+	{
+		double refr_idx = tokens[5] ? ft_atof(tokens[5]) : 1.5;
+		double fuzz = tokens[6] ? ft_atof(tokens[6]) : 0.0;
+		plane->material = material_create_glass(parse_color(tokens[3]), refr_idx, fuzz);
+	}
+	else
+	{
+		plane->material = material_create(0.1, 0.9, 0.0, 0);
+		plane->material.color = parse_color(tokens[3]);
+	}
 	object_add(scene, OBJ_PLANE, plane);
 	return (1);
 }
@@ -80,8 +98,17 @@ int	parse_cylinder(char **tokens, t_scene *scene)
 	cylinder->axis = ft_vec3_normalize(parse_vector(tokens[2]));
 	cylinder->radius = ft_atof(tokens[3]) / 2.0;
 	cylinder->height = ft_atof(tokens[4]);
-	cylinder->material = material_create(0.1, 0.9, 0.2, 16);
-	cylinder->material.color = parse_color(tokens[5]);
+	if (tokens[6] && ft_strcmp(tokens[6], "glass") == 0)
+	{
+		double refr_idx = tokens[7] ? ft_atof(tokens[7]) : 1.5;
+		double fuzz = tokens[8] ? ft_atof(tokens[8]) : 0.0;
+		cylinder->material = material_create_glass(parse_color(tokens[5]), refr_idx, fuzz);
+	}
+	else
+	{
+		cylinder->material = material_create(0.1, 0.9, 0.2, 16);
+		cylinder->material.color = parse_color(tokens[5]);
+	}
 	object_add(scene, OBJ_CYLINDER, cylinder);
 	return (1);
 }

@@ -89,6 +89,8 @@ static int	is_in_shadow(t_vec3 point, t_vec3 light_pos, t_scene *scene)
 				),
 			ft_vec3_normalize(to_light));
 	shadow_hit = intersect_scene(shadow_ray, scene);
+	if (shadow_hit.hit && shadow_hit.material.transparency > EPSILON)
+		return (0);
 	return (shadow_hit.hit && shadow_hit.t < light_distance);
 }
 

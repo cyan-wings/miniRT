@@ -48,5 +48,23 @@ t_material	material_create(
 	material.diffuse = diffuse;
 	material.specular = specular;
 	material.shininess = shininess;
+	material.transparency = 0.0;
+	material.refractive_index = 1.0;
+	material.fuzz = 0.0;
+	return (material);
+}
+
+t_material	material_create_glass(t_color tint, double refr_idx, double fuzz)
+{
+	t_material	material;
+
+	material.color = tint;
+	material.ambient = 0.0;
+	material.diffuse = 0.0;
+	material.specular = 0.0;
+	material.shininess = 0.0;
+	material.transparency = 1.0;
+	material.refractive_index = refr_idx;
+	material.fuzz = fuzz;
 	return (material);
 }

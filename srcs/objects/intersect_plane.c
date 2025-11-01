@@ -30,9 +30,11 @@ t_hit	intersect_plane(t_ray ray, t_plane *plane)
 	hit.hit = 1;
 	hit.t = t;
 	hit.point = ray_at(ray, t);
-	hit.normal = plane->normal;
-	if (ft_vec3_dot(ray.direction, hit.normal) > 0)
-		hit.normal = ft_vec3_mult(hit.normal, -1.0);
+	hit.front_face = (ft_vec3_dot(ray.direction, plane->normal) < 0);
+	if (hit.front_face)
+		hit.normal = plane->normal;
+	else
+		hit.normal = ft_vec3_mult(plane->normal, -1.0);
 	hit.material = plane->material;
 	return (hit);
 }

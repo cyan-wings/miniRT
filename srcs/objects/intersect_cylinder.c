@@ -69,6 +69,7 @@ static t_hit	create_cylinder_side_hit(t_ray ray, t_cylinder *cyl,
 	t_hit	hit;
 	t_vec3	to_point;
 	t_vec3	proj_point;
+	t_vec3	outward_normal;
 	double	proj;
 
 	ft_memset(&hit, 0, sizeof(t_hit));
@@ -78,7 +79,12 @@ static t_hit	create_cylinder_side_hit(t_ray ray, t_cylinder *cyl,
 	to_point = ft_vec3_sub(hit.point, cyl->center);
 	proj = ft_vec3_dot(to_point, axis_n);
 	proj_point = ft_vec3_add(cyl->center, ft_vec3_mult(axis_n, proj));
-	hit.normal = ft_vec3_normalize(ft_vec3_sub(hit.point, proj_point));
+	outward_normal = ft_vec3_normalize(ft_vec3_sub(hit.point, proj_point));
+	hit.front_face = (ft_vec3_dot(ray.direction, outward_normal) < 0);
+	if (hit.front_face)
+		hit.normal = outward_normal;
+	else
+		hit.normal = ft_vec3_mult(outward_normal, -1.0);
 	hit.material = cyl->material;
 	return (hit);
 }
@@ -96,7 +102,11 @@ static t_hit	create_cylinder_cap_hit(t_ray ray, t_cylinder *cyl,
 	norm = ft_vec3_normalize(cyl->axis);
 	if (top < 0)
 		norm = ft_vec3_mult(norm, -1.0);
-	hit.normal = norm;
+	hit.front_face = (ft_vec3_dot(ray.direction, norm) < 0);
+	if (hit.front_face)
+		hit.normal = norm;
+	else
+		hit.normal = ft_vec3_mult(norm, -1.0);
 	hit.material = cyl->material;
 	return (hit);
 }
