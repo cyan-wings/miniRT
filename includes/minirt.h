@@ -234,8 +234,8 @@ int			parse_cylinder(char **tokens, t_scene *scene);
 
 /* Color utilities */
 t_color		color_add(t_color a, t_color b);
-t_color		color_mult(t_color c, double t);
 t_color		color_multiply(t_color a, t_color b);
+t_color		color_scale(t_color c, double t);
 t_color		color_clamp(t_color a, double low, double high);
 int			color_to_int(t_color c);
 t_color		int_to_color(int color);

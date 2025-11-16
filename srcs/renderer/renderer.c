@@ -24,6 +24,13 @@ void	put_pixel(t_mlx_data *data, int x, int y, int color)
 
 t_ray	calc_reflected_ray(t_hit *hit, t_vec3 reflected_dir);
 
+//	return (color_add(
+//		local_color,
+//		color_multiply(color_clamp(reflected_color, 0, 1),
+//		hit.material.color)));
+//	return (color_add(
+//		color_scale(local_color, (1.0 - hit.material.shininess)),
+//		color_scale(reflected_color, hit.material.shininess)));
 static t_color	trace_ray(t_ray ray, t_scene *scene, int depth)
 {
 	t_hit	hit;
@@ -42,9 +49,10 @@ static t_color	trace_ray(t_ray ray, t_scene *scene, int depth)
 		return (local_color);
 	reflected_color = trace_ray(calc_reflected_ray(&hit, reflected_dir),
 			scene, depth - 1);
-	return (color_add(local_color, color_mult(color_multiply(reflected_color, hit.material.color), 0.5)));
-	// return (color_add(local_color, color_multiply(color_clamp(reflected_color, 0, 1), hit.material.color)));
-	// return (color_add(color_mult(local_color, (1.0 - hit.material.shininess)), color_mult(reflected_color, hit.material.shininess)));
+	return (color_add(
+			local_color,
+			color_scale(color_multiply(reflected_color, hit.material.color),
+				0.5)));
 }
 
 static void	get_jitters(int rpp, double *jitter_u, double *jitter_v)
@@ -80,7 +88,7 @@ static t_color	get_pixel_color(int rpp, int x, int y, t_scene *scene)
 				jitter_u, jitter_v);
 		pixel_color = color_add(pixel_color, trace_ray(ray, scene, MAX_DEPTH));
 	}
-	return (color_mult(pixel_color, 1/(double)rpp));
+	return (color_scale(pixel_color, 1 / (double)rpp));
 }
 
 void	render_scene(t_minirt *minirt)
@@ -100,7 +108,7 @@ void	render_scene(t_minirt *minirt)
 		while (x < WIN_WIDTH)
 		{
 			color_int = color_to_int(get_pixel_color(rpp, x, y,
-							&minirt->scene));
+						&minirt->scene));
 			put_pixel(&minirt->mlx_data, x, y, color_int);
 			x++;
 		}
