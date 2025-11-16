@@ -74,7 +74,7 @@ FLUSH			=	\033[2K
 ##############################################
 
 run: all
-	./$(NAME) scenes/sample.rt
+	./$(NAME) scenes/sample2.rt
 
 all: $(NAME)
 
