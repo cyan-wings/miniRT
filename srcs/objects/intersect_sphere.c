@@ -12,7 +12,7 @@
 
 #include "minirt.h"
 
-static void	init_data(t_sphere_intersect *data, t_ray *ray, t_sphere *sphere)
+static int	init_data(t_sphere_intersect *data, t_ray *ray, t_sphere *sphere)
 {
 	t_vec3	oc;
 
@@ -22,6 +22,17 @@ static void	init_data(t_sphere_intersect *data, t_ray *ray, t_sphere *sphere)
 	data->c = ft_vec3_dot(oc, oc)
 		- sphere->radius * sphere->radius;
 	data->discriminant = data->b * data->b - 4 * data->a * data->c;
+	if (data->discriminant < 0)
+		return (0);
+	data->sqrtd = ft_sqrt(data->discriminant);
+	data->t = (-data->b - data->sqrtd) / (2.0 * data->a);
+	if (data->t < EPSILON)
+	{
+		data->t = (-data->b + data->sqrtd) / (2.0 * data->a);
+		if (data->t < EPSILON)
+			return (0);
+	}
+	return (1);
 }
 
 // Check on EPSILON usage for min max intersection.
@@ -31,17 +42,8 @@ t_hit	intersect_sphere(t_ray ray, t_sphere *sphere)
 	t_hit				hit;
 	t_vec3				outward_normal;
 
-	init_data(&data, &ray, sphere);
-	if (data.discriminant < 0)
+	if (!init_data(&data, &ray, sphere))
 		return ((t_hit){});
-	data.sqrtd = ft_sqrt(data.discriminant);
-	data.t = (-data.b - data.sqrtd) / (2.0 * data.a);
-	if (data.t < EPSILON)
-	{
-		data.t = (-data.b + data.sqrtd) / (2.0 * data.a);
-		if (data.t < EPSILON)
-			return ((t_hit){});
-	}
 	ft_memset(&hit, 0, sizeof(t_hit));
 	hit.hit = 1;
 	hit.t = data.t;
