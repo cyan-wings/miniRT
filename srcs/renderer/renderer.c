@@ -24,6 +24,49 @@ void	put_pixel(t_mlx_data *data, int x, int y, int color)
 
 t_ray	calc_reflected_ray(t_hit *hit, t_vec3 reflected_dir);
 
+static t_color	trace_glass(t_ray ray, t_hit hit, t_scene *scene, int depth)
+{
+	t_color	attenuation;
+	double	ri;
+	t_vec3	unit_direction;
+	double	cos_theta;
+	double	sin_theta;
+	t_vec3	direction;
+
+	attenuation = hit.material.color;
+	ri = hit.front_face ? (1.0 / hit.material.refractive_index)
+		: hit.material.refractive_index;
+	unit_direction = ft_vec3_normalize(ray.direction);
+	cos_theta = fmin(ft_vec3_dot(ft_vec3_mult(unit_direction, -1.0),
+				hit.normal), 1.0);
+	sin_theta = sqrt(1.0 - cos_theta * cos_theta);
+	
+	// Check total internal reflection first (must reflect)
+	// Then use Schlick for probabilistic reflection/refraction mix
+	if (ri * sin_theta > 1.0
+		|| schlick_reflectance(cos_theta, ri) > random_double())
+	{
+		// Reflect: either TIR or Fresnel says reflect
+		if (!hit.front_face)
+			attenuation = (t_color){1, 1, 1};
+		direction = ft_vec3_reflect(unit_direction, hit.normal);
+	}
+	else
+	{
+		// Refract: Fresnel says refract
+		direction = ft_vec3_refract(unit_direction, hit.normal, ri);
+		if (ft_vec3_length(direction) < EPSILON)
+			direction = ft_vec3_reflect(unit_direction, hit.normal);
+	}
+	
+	if (hit.material.fuzz > EPSILON)
+		direction = ft_vec3_add(direction,
+				ft_vec3_mult(ft_vec3_random_unit_vector(), hit.material.fuzz));
+	direction = ft_vec3_normalize(direction);
+	return (color_multiply(trace_ray(calc_refracted_ray(&hit, direction),
+				scene, depth - 1), attenuation));
+}
+
 //	return (color_add(
 //		local_color,
 //		color_multiply(color_clamp(reflected_color, 0, 1),
@@ -43,6 +86,8 @@ static t_color	trace_ray(t_ray ray, t_scene *scene, int depth)
 	hit = intersect_scene(ray, scene);
 	if (!hit.hit)
 		return ((t_color){0, 0, 0});
+	if (hit.material.transparency > EPSILON)
+		return (trace_glass(ray, hit, scene, depth));
 	local_color = calculate_lighting(hit, scene, ray);
 	reflected_dir = ft_vec3_reflect(ray.direction, hit.normal);
 	if (ft_vec3_length(reflected_dir) < EPSILON)

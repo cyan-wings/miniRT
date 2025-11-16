@@ -30,8 +30,8 @@
 # endif
 
 /* Window settings */
-# define WIN_WIDTH 1920
-# define WIN_HEIGHT 900
+# define WIN_WIDTH 1080
+# define WIN_HEIGHT 720
 # define WIN_TITLE "miniRT"
 
 /* Ray tracing constants */
@@ -74,6 +74,9 @@ typedef struct s_material
 	double	diffuse;
 	double	specular;
 	double	shininess;
+	double	transparency;
+	double	refractive_index;
+	double	fuzz;
 }	t_material;
 
 /* Hit information */
@@ -84,6 +87,7 @@ typedef struct s_hit
 	t_vec3		point;
 	t_vec3		normal;
 	t_material	material;
+	int			front_face;
 }	t_hit;
 
 /* Object types */
@@ -231,6 +235,8 @@ int			parse_plane(char **tokens, t_scene *scene);
 int			parse_cylinder(char **tokens, t_scene *scene);
 
 /* Vector utilities - from libft ft_math_utils.h */
+t_vec3		ft_vec3_refract(t_vec3 uv, t_vec3 n, double etai_over_etat);
+t_vec3		ft_vec3_random_unit_vector(void);
 
 /* Color utilities */
 t_color		color_add(t_color a, t_color b);
@@ -243,6 +249,8 @@ t_color		int_to_color(int color);
 /* Ray utilities */
 t_ray		ray_create(t_vec3 origin, t_vec3 direction);
 t_vec3		ray_at(t_ray ray, double t);
+t_ray		calc_refracted_ray(t_hit *hit, t_vec3 direction);
+double		schlick_reflectance(double cosine, double ref_idx);
 
 /* Camera */
 void		camera_init(t_camera *camera);
@@ -270,6 +278,7 @@ void		objects_free(t_scene *scene);
 /* Material */
 t_material	material_create(double ambient,
 				double diffuse, double specular, double shininess);
+t_material	material_create_glass(t_color tint, double refr_idx, double fuzz);
 
 /* MLX utilities */
 int			init_mlx(t_mlx_data *data);

@@ -29,6 +29,7 @@ t_hit	intersect_sphere(t_ray ray, t_sphere *sphere)
 {
 	t_sphere_intersect	data;
 	t_hit				hit;
+	t_vec3				outward_normal;
 
 	init_data(&data, &ray, sphere);
 	if (data.discriminant < 0)
@@ -45,7 +46,12 @@ t_hit	intersect_sphere(t_ray ray, t_sphere *sphere)
 	hit.hit = 1;
 	hit.t = data.t;
 	hit.point = ray_at(ray, data.t);
-	hit.normal = ft_vec3_normalize(ft_vec3_sub(hit.point, sphere->center));
+	outward_normal = ft_vec3_normalize(ft_vec3_sub(hit.point, sphere->center));
+	hit.front_face = (ft_vec3_dot(ray.direction, outward_normal) < 0);
+	if (hit.front_face)
+		hit.normal = outward_normal;
+	else
+		hit.normal = ft_vec3_mult(outward_normal, -1.0);
 	hit.material = sphere->material;
 	return (hit);
 }

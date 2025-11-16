@@ -35,3 +35,24 @@ t_ray	calc_reflected_ray(t_hit *hit, t_vec3 reflected_dir)
 	reflected_origin = ft_vec3_add(hit->point, offset);
 	return (ray_create(reflected_origin, reflected_dir));
 }
+
+t_ray	calc_refracted_ray(t_hit *hit, t_vec3 direction)
+{
+	t_vec3	offset;
+	t_vec3	origin;
+
+	// Offset in the direction of the ray to avoid self-intersection
+	// This works for both reflection and refraction
+	offset = ft_vec3_mult(ft_vec3_normalize(direction), EPSILON);
+	origin = ft_vec3_add(hit->point, offset);
+	return (ray_create(origin, direction));
+}
+
+double	schlick_reflectance(double cosine, double ref_idx)
+{
+	double	r0;
+
+	r0 = (1.0 - ref_idx) / (1.0 + ref_idx);
+	r0 = r0 * r0;
+	return (r0 + (1.0 - r0) * pow((1.0 - cosine), 5.0));
+}
