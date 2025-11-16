@@ -24,6 +24,8 @@ void	put_pixel(t_mlx_data *data, int x, int y, int color)
 
 t_ray	calc_reflected_ray(t_hit *hit, t_vec3 reflected_dir);
 
+static t_color	trace_ray(t_ray ray, t_scene *scene, int depth);
+
 static t_color	trace_glass(t_ray ray, t_hit hit, t_scene *scene, int depth)
 {
 	t_color	attenuation;
