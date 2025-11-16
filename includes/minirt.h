@@ -117,6 +117,25 @@ typedef struct s_sphere_intersect
 	double	t;
 }	t_sphere_intersect;
 
+/* Cylinder intersection variables */
+typedef struct s_cylinder_intersect
+{
+	t_vec3	axis_n;
+	double	half_h;
+	double	a;
+	double	b;
+	double	c;
+	double	discriminant;
+	double	sqrtd;
+	double	t_side;
+	double	denom;
+	t_vec3	top_cap_center;
+	t_vec3	btm_cap_center;
+	double	t_top_cap;
+	double	t_btm_cap;
+	t_hit	best_hit;
+}	t_cylinder_intersect;
+
 /* Plane structure */
 typedef struct s_plane
 {
@@ -221,8 +240,8 @@ t_vec3		ft_vec3_random_unit_vector(void);
 
 /* Color utilities */
 t_color		color_add(t_color a, t_color b);
-t_color		color_mult(t_color c, double t);
 t_color		color_multiply(t_color a, t_color b);
+t_color		color_scale(t_color c, double t);
 t_color		color_clamp(t_color a, double low, double high);
 int			color_to_int(t_color c);
 t_color		int_to_color(int color);

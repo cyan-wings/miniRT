@@ -12,21 +12,6 @@
 
 #include "minirt.h"
 
-typedef struct s_cylinder_intersect
-{
-	t_vec3	axis_n;
-	double	half_h;
-	double	a;
-	double	b;
-	double	c;
-	double	discriminant;
-	double	sqrtd;
-	double	t_side;
-	double	t_cap;
-	double	denom;
-	t_hit	best_hit;
-}	t_cylinder_intersect;
-
 static void	init_cylinder_data(t_cylinder_intersect *d, t_ray *ray,
 		t_cylinder *cyl)
 {
@@ -89,62 +74,8 @@ static t_hit	create_cylinder_side_hit(t_ray ray, t_cylinder *cyl,
 	return (hit);
 }
 
-static t_hit	create_cylinder_cap_hit(t_ray ray, t_cylinder *cyl,
-		double t, int top)
-{
-	t_hit	hit;
-	t_vec3	norm;
-
-	ft_memset(&hit, 0, sizeof(t_hit));
-	hit.hit = 1;
-	hit.t = t;
-	hit.point = ray_at(ray, t);
-	norm = ft_vec3_normalize(cyl->axis);
-	if (top < 0)
-		norm = ft_vec3_mult(norm, -1.0);
-	hit.front_face = (ft_vec3_dot(ray.direction, norm) < 0);
-	if (hit.front_face)
-		hit.normal = norm;
-	else
-		hit.normal = ft_vec3_mult(norm, -1.0);
-	hit.material = cyl->material;
-	return (hit);
-}
-
-static void	intersect_caps(t_ray ray, t_cylinder *cyl, t_cylinder_intersect *d)
-{
-	t_vec3	cap_center;
-	t_vec3	p;
-	double	dist;
-
-	d->denom = ft_vec3_dot(ray.direction, d->axis_n);
-	if (ft_abs(d->denom) < EPSILON)
-		return ;
-	cap_center = ft_vec3_add(cyl->center,
-			ft_vec3_mult(d->axis_n, d->half_h));
-	d->t_cap = ft_vec3_dot(ft_vec3_sub(cap_center, ray.origin), d->axis_n)
-		/ d->denom;
-	if (d->t_cap > EPSILON)
-	{
-		p = ray_at(ray, d->t_cap);
-		dist = ft_vec3_length(ft_vec3_sub(p, cap_center));
-		if (dist <= cyl->radius + EPSILON
-			&& (!d->best_hit.hit || d->t_cap < d->best_hit.t))
-			d->best_hit = create_cylinder_cap_hit(ray, cyl, d->t_cap, +1);
-	}
-	cap_center = ft_vec3_sub(cyl->center,
-			ft_vec3_mult(d->axis_n, d->half_h));
-	d->t_cap = ft_vec3_dot(ft_vec3_sub(cap_center, ray.origin), d->axis_n)
-		/ d->denom;
-	if (d->t_cap > EPSILON)
-	{
-		p = ray_at(ray, d->t_cap);
-		dist = ft_vec3_length(ft_vec3_sub(p, cap_center));
-		if (dist <= cyl->radius + EPSILON
-			&& (!d->best_hit.hit || d->t_cap < d->best_hit.t))
-			d->best_hit = create_cylinder_cap_hit(ray, cyl, d->t_cap, -1);
-	}
-}
+void	intersect_cylinder_caps(t_ray ray, t_cylinder *cyl,
+				t_cylinder_intersect *d);
 
 t_hit	intersect_cylinder(t_ray ray, t_cylinder *cyl)
 {
@@ -167,6 +98,6 @@ t_hit	intersect_cylinder(t_ray ray, t_cylinder *cyl)
 						d.axis_n);
 		}
 	}
-	intersect_caps(ray, cyl, &d);
+	intersect_cylinder_caps(ray, cyl, &d);
 	return (d.best_hit);
 }

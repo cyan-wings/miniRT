@@ -15,7 +15,7 @@
 static t_color	ambient_light(t_material material, t_ambient ambient)
 {
 	return (color_multiply(material.color,
-			color_mult(ambient.color, ambient.ratio)));
+			color_scale(ambient.color, ambient.ratio)));
 }
 
 static t_color	diffuse_light(
@@ -31,7 +31,7 @@ static t_color	diffuse_light(
 	dot_product = ft_vec3_dot(normal, light_dir);
 	if (dot_product < 0)
 		dot_product = 0;
-	diffuse = color_mult(light_color, material.diffuse * dot_product);
+	diffuse = color_scale(light_color, material.diffuse * dot_product);
 	return (color_multiply(material.color, diffuse));
 }
 
@@ -110,12 +110,12 @@ t_color	calculate_lighting(t_hit hit, t_scene *scene, t_ray ray)
 	view_dir = ft_vec3_normalize(ft_vec3_mult(ray.direction, -1.0));
 	diffuse_color = diffuse_light(light_dir, hit.normal,
 			hit.material, scene->light.color);
-	specular_color = color_mult(scene->light.color,
+	specular_color = color_scale(scene->light.color,
 			hit.material.specular * calc_specular_intensity(
 				light_dir, hit.normal, view_dir, hit.material.shininess));
 	final_color = color_add(final_color,
-			color_mult(diffuse_color, scene->light.brightness));
+			color_scale(diffuse_color, scene->light.brightness));
 	final_color = color_add(final_color,
-			color_mult(specular_color, scene->light.brightness));
+			color_scale(specular_color, scene->light.brightness));
 	return (final_color);
 }
