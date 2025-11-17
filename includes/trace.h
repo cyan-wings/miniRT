@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse.h                                            :+:      :+:    :+:   */
+/*   trace.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: myeow <myeow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,31 +10,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSE_H
-# define PARSE_H
+#ifndef TRACE_H
+# define TRACE_H
 
-# include "ft_string_utils.h"
-# include "ft_mem_utils.h"
-# include "primitive.h"
-# include "scene.h"
+# include "color.h"
+# include "ft_math_utils.h"
 
-typedef int		(*t_parse_meta_fn)(char **, t_scene *);
-typedef t_prm	(*t_parse_prm_fn)(char **);
-
-typedef struct s_meta_function_table
+// Ray trace glass variables
+typedef struct s_trace_glass
 {
-	const char		*id;
-	t_parse_meta_fn	fn;
-}	t_meta_ft;
-
-typedef struct s_prm_function_table
-{
-	const char		*id;
-	t_parse_prm_fn	fn;
-}	t_prm_ft;
-
-t_color	parse_color(char *str);
-void	parse_material(char **tokens, t_material *mat);
-t_vec3	parse_vector(char *str);
+	t_color	attenuation;
+	double	ri;
+	t_vec3	unit_direction;
+	double	cos_theta;
+	double	sin_theta;
+	t_vec3	direction;
+}	t_trc_gls;
 
 #endif

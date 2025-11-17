@@ -20,14 +20,14 @@ t_vec3	ft_vec3_refract(t_vec3 uv, t_vec3 n, double etai_over_etat)
 	t_vec3	r_out_parallel;
 
 	cos_theta = fmin(ft_vec3_dot(ft_vec3_mult(uv, -1.0), n), 1.0);
-	sin_theta = sqrt(1.0 - cos_theta * cos_theta);
+	sin_theta = ft_sqrt(1.0 - cos_theta * cos_theta);
 	if (etai_over_etat * sin_theta > 1.0)
 		return ((t_vec3){0, 0, 0});
 	r_out_perp = ft_vec3_mult(
 			ft_vec3_add(uv, ft_vec3_mult(n, cos_theta)),
 			etai_over_etat);
 	r_out_parallel = ft_vec3_mult(n,
-			-sqrt(fabs(1.0 - ft_vec3_dot(r_out_perp, r_out_perp))));
+			-ft_sqrt(ft_abs(1.0 - ft_vec3_dot(r_out_perp, r_out_perp))));
 	return (ft_vec3_add(r_out_perp, r_out_parallel));
 }
 
@@ -39,10 +39,10 @@ t_vec3	ft_vec3_random_unit_vector(void)
 	double	y;
 	double	z;
 
-	theta = 2.0 * M_PI * random_double();
-	phi = acos(2.0 * random_double() - 1.0);
-	x = sin(phi) * cos(theta);
-	y = sin(phi) * sin(theta);
-	z = cos(phi);
+	theta = 2.0 * PI * random_double();
+	phi = ft_acos(2.0 * random_double() - 1.0);
+	x = ft_sin(phi) * ft_cos(theta);
+	y = ft_sin(phi) * ft_sin(theta);
+	z = ft_cos(phi);
 	return ((t_vec3){x, y, z});
 }

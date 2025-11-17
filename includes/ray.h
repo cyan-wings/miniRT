@@ -13,7 +13,7 @@
 #ifndef RAY_H
 # define RAY_H
 
-#include "ft_math_utils.h"
+# include "ft_math_utils.h"
 
 // Ray structure
 typedef struct s_ray
@@ -23,4 +23,3 @@ typedef struct s_ray
 }	t_ray;
 
 #endif
-

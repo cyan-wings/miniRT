@@ -96,7 +96,7 @@ static int	is_in_shadow(t_vec3 point, t_vec3 light_pos, t_scene *scene)
 	return (shadow_hit.hit && shadow_hit.t < light_distance);
 }
 
-t_color	calculate_lighting(t_hit hit, t_scene *scene, t_ray ray)
+t_color	calculate_lighting(t_hit *hit, t_scene *scene, t_ray ray)
 {
 	t_color	final_color;
 	t_color	diffuse_color;
@@ -104,18 +104,18 @@ t_color	calculate_lighting(t_hit hit, t_scene *scene, t_ray ray)
 	t_vec3	light_dir;
 	t_vec3	view_dir;
 
-	final_color = ambient_light(hit.material, scene->ambient);
-	if (is_in_shadow(hit.point, scene->light.position, scene))
+	final_color = ambient_light(hit->material, scene->ambient);
+	if (is_in_shadow(hit->point, scene->light.position, scene))
 		return (final_color);
 	light_dir = ft_vec3_normalize(
-			ft_vec3_sub(scene->light.position, hit.point));
+			ft_vec3_sub(scene->light.position, hit->point));
 	view_dir = ft_vec3_normalize(ft_vec3_mult(ray.direction, -1.0));
-	diffuse_color = diffuse_light(light_dir, hit.normal,
-			hit.material, scene->light.color);
+	diffuse_color = diffuse_light(light_dir, hit->normal,
+			hit->material, scene->light.color);
 	specular_color = color_scale(scene->light.color,
-			hit.material.data.dif.specular * calc_specular_intensity(
-				light_dir, hit.normal,
-				view_dir, hit.material.data.dif.shininess));
+			hit->material.data.dif.specular * calc_specular_intensity(
+				light_dir, hit->normal,
+				view_dir, hit->material.data.dif.shininess));
 	final_color = color_add(final_color,
 			color_scale(diffuse_color, scene->light.brightness));
 	final_color = color_add(final_color,

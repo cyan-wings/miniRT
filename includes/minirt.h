@@ -74,8 +74,6 @@ typedef struct s_minirt
 	t_mlx_data	mlx_data;
 }	t_minirt;
 
-/* Function prototypes */
-
 /* Main */
 int			main(int argc, char **argv);
 
@@ -103,17 +101,9 @@ t_vec3		camera_base_direction(t_camera *camera, double u, double v);
 t_ray		camera_get_ray_scattered(t_camera *camera, t_vec3 direction,
 				double jitter_u, double jitter_v);
 
-/* Lighting */
-t_color		calculate_lighting(t_hit hit, t_scene *scene, t_ray ray);
-
 /* Renderer */
 void		render_scene(t_minirt *minirt);
 void		put_pixel(t_mlx_data *data, int x, int y, int color);
-
-/* Material */
-t_material	material_create(double ambient,
-				double diffuse, double specular, double shininess);
-t_material	material_create_glass(t_color tint, double refr_idx, double fuzz);
 
 /* MLX utilities */
 int			init_mlx(t_mlx_data *data);
