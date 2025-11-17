@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   intersect_plane.c                                  :+:      :+:    :+:   */
+/*   parse_cylinder.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: myeow <myeow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minirt.h"
+#include "parse.h"
 
-t_hit	intersect_plane(t_ray ray, void *pln, t_material *mat)
+t_prm	parse_cylinder(char **tokens)
 {
-	t_hit	hit;
-	double	denom;
-	double	t;
-	t_vec3	p0l0;
-	t_p_pln	*plane;
+	t_prm	cyl;
 
-	plane = (t_p_pln *)pln;
-	ft_memset(&hit, 0, sizeof(t_hit));
-	denom = ft_vec3_dot(plane->normal, ray.direction);
-	if (ft_abs(denom) < EPSILON)
-		return (hit);
-	p0l0 = ft_vec3_sub(plane->point, ray.origin);
-	t = ft_vec3_dot(p0l0, plane->normal) / denom;
-	if (t < EPSILON)
-		return (hit);
-	hit.hit = 1;
-	hit.t = t;
-	hit.point = ray_at(ray, t);
-	hit.front_face = (ft_vec3_dot(ray.direction, plane->normal) < 0);
-	if (hit.front_face)
-		hit.normal = plane->normal;
-	else
-		hit.normal = ft_vec3_mult(plane->normal, -1.0);
-	hit.material = *mat;
-	return (hit);
+	cyl = (t_prm){0};
+	if (!tokens[1] || !tokens[2] || !tokens[3] || !tokens[4] || !tokens[5])
+		return (cyl);
+	cyl.type = CYLINDER;
+	cyl.data.cyl.center = parse_vector(tokens[1]);
+	cyl.data.cyl.axis = ft_vec3_normalize(parse_vector(tokens[2]));
+	cyl.data.cyl.radius = ft_atof(tokens[3]) / 2.0;
+	cyl.data.cyl.height = ft_atof(tokens[4]);
+	parse_material(&tokens[5], &cyl.mat);
+	cyl.intersect_fn = intersect_cylinder;
+	return (cyl);
 }

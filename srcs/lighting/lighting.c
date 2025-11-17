@@ -31,7 +31,7 @@ static t_color	diffuse_light(
 	dot_product = ft_vec3_dot(normal, light_dir);
 	if (dot_product < 0)
 		dot_product = 0;
-	diffuse = color_scale(light_color, material.diffuse * dot_product);
+	diffuse = color_scale(light_color, material.data.dif.diffuse * dot_product);
 	return (color_multiply(material.color, diffuse));
 }
 
@@ -74,6 +74,8 @@ static double	calc_specular_intensity(
 	return (ft_power(specular_angle_factor, material_shininess));
 }
 
+t_hit	intersect_scene(t_ray ray, t_scene *scene);
+
 static int	is_in_shadow(t_vec3 point, t_vec3 light_pos, t_scene *scene)
 {
 	t_ray	shadow_ray;
@@ -89,7 +91,7 @@ static int	is_in_shadow(t_vec3 point, t_vec3 light_pos, t_scene *scene)
 				),
 			ft_vec3_normalize(to_light));
 	shadow_hit = intersect_scene(shadow_ray, scene);
-	if (shadow_hit.hit && shadow_hit.material.transparency > EPSILON)
+	if (shadow_hit.hit && shadow_hit.material.data.gls.transparency > EPSILON)
 		return (0);
 	return (shadow_hit.hit && shadow_hit.t < light_distance);
 }
@@ -111,8 +113,9 @@ t_color	calculate_lighting(t_hit hit, t_scene *scene, t_ray ray)
 	diffuse_color = diffuse_light(light_dir, hit.normal,
 			hit.material, scene->light.color);
 	specular_color = color_scale(scene->light.color,
-			hit.material.specular * calc_specular_intensity(
-				light_dir, hit.normal, view_dir, hit.material.shininess));
+			hit.material.data.dif.specular * calc_specular_intensity(
+				light_dir, hit.normal,
+				view_dir, hit.material.data.dif.shininess));
 	final_color = color_add(final_color,
 			color_scale(diffuse_color, scene->light.brightness));
 	final_color = color_add(final_color,

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   intersect_plane.c                                  :+:      :+:    :+:   */
+/*   material.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: myeow <myeow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,45 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minirt.h"
+#ifndef MATERIAL_H
+# define MATERIAL_H
 
-t_hit	intersect_plane(t_ray ray, void *pln, t_material *mat)
+# include "color.h"
+
+// Material types
+typedef enum e_material_type
 {
-	t_hit	hit;
-	double	denom;
-	double	t;
-	t_vec3	p0l0;
-	t_p_pln	*plane;
+	DIFFUSE,
+	GLASS
+}	t_m_type;
 
-	plane = (t_p_pln *)pln;
-	ft_memset(&hit, 0, sizeof(t_hit));
-	denom = ft_vec3_dot(plane->normal, ray.direction);
-	if (ft_abs(denom) < EPSILON)
-		return (hit);
-	p0l0 = ft_vec3_sub(plane->point, ray.origin);
-	t = ft_vec3_dot(p0l0, plane->normal) / denom;
-	if (t < EPSILON)
-		return (hit);
-	hit.hit = 1;
-	hit.t = t;
-	hit.point = ray_at(ray, t);
-	hit.front_face = (ft_vec3_dot(ray.direction, plane->normal) < 0);
-	if (hit.front_face)
-		hit.normal = plane->normal;
-	else
-		hit.normal = ft_vec3_mult(plane->normal, -1.0);
-	hit.material = *mat;
-	return (hit);
-}
+typedef struct s_material_diffuse
+{
+	double	ambient;
+	double	diffuse;
+	double	specular;
+	double	shininess;
+}	t_m_dif;
+
+typedef struct s_material_glass
+{
+	double	transparency;
+	double	refractive_index;
+	double	fuzz;
+}	t_m_gls;
+
+typedef union u_material_data
+{
+	t_m_dif	dif;
+	t_m_gls	gls;
+}	t_mat_data;
+
+// Material structure
+typedef struct s_material
+{
+	t_m_type		type;
+	t_color			color;
+	t_mat_data		data;
+}	t_material;
+
+#endif

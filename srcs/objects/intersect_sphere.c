@@ -12,7 +12,7 @@
 
 #include "minirt.h"
 
-static int	init_data(t_sphere_intersect *data, t_ray *ray, t_sphere *sphere)
+static int	init_data(t_sphere_intersect *data, t_ray *ray, t_p_sph *sphere)
 {
 	t_vec3	oc;
 
@@ -36,24 +36,26 @@ static int	init_data(t_sphere_intersect *data, t_ray *ray, t_sphere *sphere)
 }
 
 // Check on EPSILON usage for min max intersection.
-t_hit	intersect_sphere(t_ray ray, t_sphere *sphere)
+t_hit	intersect_sphere(t_ray ray, void *sphere, t_material *mat)
 {
 	t_sphere_intersect	data;
 	t_hit				hit;
 	t_vec3				outward_normal;
+	t_p_sph				*sph;
 
-	if (!init_data(&data, &ray, sphere))
+	sph = (t_p_sph *)sphere;
+	if (!init_data(&data, &ray, sph))
 		return ((t_hit){});
 	ft_memset(&hit, 0, sizeof(t_hit));
 	hit.hit = 1;
 	hit.t = data.t;
 	hit.point = ray_at(ray, data.t);
-	outward_normal = ft_vec3_normalize(ft_vec3_sub(hit.point, sphere->center));
+	outward_normal = ft_vec3_normalize(ft_vec3_sub(hit.point, sph->center));
 	hit.front_face = (ft_vec3_dot(ray.direction, outward_normal) < 0);
 	if (hit.front_face)
 		hit.normal = outward_normal;
 	else
 		hit.normal = ft_vec3_mult(outward_normal, -1.0);
-	hit.material = sphere->material;
+	hit.material = *mat;
 	return (hit);
 }

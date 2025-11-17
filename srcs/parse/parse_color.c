@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_scene_elements.c                             :+:      :+:    :+:   */
+/*   parse_color.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: myeow <myeow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,11 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minirt.h"
+#include "parse.h"
 
-t_vec3	parse_vector(char *str);
-
-static t_color	parse_color(char *str)
+t_color	parse_color(char *str)
 {
 	char	**components;
 	t_color	color;
@@ -31,23 +29,4 @@ static t_color	parse_color(char *str)
 	color.b = ft_atoi(components[2]) / 255.0;
 	ft_free_array((void **)components);
 	return (color);
-}
-
-int	parse_ambient(char **tokens, t_scene *scene)
-{
-	if (!tokens[1] || !tokens[2])
-		return (0);
-	scene->ambient.ratio = ft_atof(tokens[1]);
-	scene->ambient.color = parse_color(tokens[2]);
-	return (1);
-}
-
-int	parse_light(char **tokens, t_scene *scene)
-{
-	if (!tokens[1] || !tokens[2] || !tokens[3])
-		return (0);
-	scene->light.position = parse_vector(tokens[1]);
-	scene->light.brightness = ft_atof(tokens[2]);
-	scene->light.color = parse_color(tokens[3]);
-	return (1);
 }

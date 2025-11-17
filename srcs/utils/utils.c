@@ -23,10 +23,7 @@ void	error_exit(const char *message)
 void	cleanup_and_exit(t_minirt *minirt, const char *message)
 {
 	if (minirt)
-	{
 		cleanup_mlx(&minirt->mlx_data);
-		objects_free(&minirt->scene);
-	}
 	error_exit(message);
 }
 

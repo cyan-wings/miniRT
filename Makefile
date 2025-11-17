@@ -51,7 +51,7 @@ OBJDIRS			=	$(sort $(dir $(OBJS)))
 
 NAME			=	miniRT
 CC			=	cc
-#FSANITIZE		=	-fsanitize=address -g
+FSANITIZE		=	-fsanitize=address -g
 CFLAGS			=	-Wall -Wextra -Werror$(if $(FSANITIZE), $(FSANITIZE))
 
 ifeq ($(UNAME), Darwin)
@@ -74,7 +74,7 @@ FLUSH			=	\033[2K
 ##############################################
 
 run: all
-	./$(NAME) scenes/colored_glass.rt
+	./$(NAME) scenes/sample2.rt
 
 all: $(NAME)
 

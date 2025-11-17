@@ -10,11 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "parse.h"
 #include "minirt.h"
 
 double	ft_deg_to_rad(double deg);
-
-t_vec3	parse_vector(char *str);
 
 static double	parse_scatter_angle(char *str)
 {

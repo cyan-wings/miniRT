@@ -12,7 +12,7 @@
 
 #include "minirt.h"
 
-void	init_cylinder_caps(t_ray ray, t_cylinder *cyl,
+void	init_cylinder_caps(t_ray ray, t_p_cyl *cyl,
 				t_cylinder_intersect *d)
 {
 	d->top_cap_center = ft_vec3_add(
@@ -31,7 +31,7 @@ void	init_cylinder_caps(t_ray ray, t_cylinder *cyl,
 		/ d->denom;
 }
 
-static t_hit	create_cylinder_cap_hit(t_ray ray, t_cylinder *cyl,
+static t_hit	create_cylinder_cap_hit(t_ray ray, t_p_cyl *cyl,
 		double t, int top)
 {
 	t_hit	hit;
@@ -45,11 +45,10 @@ static t_hit	create_cylinder_cap_hit(t_ray ray, t_cylinder *cyl,
 	if (top < 0)
 		norm = ft_vec3_mult(norm, -1.0);
 	hit.normal = norm;
-	hit.material = cyl->material;
 	return (hit);
 }
 
-static void	intersect_top_cap(t_ray ray, t_cylinder *cyl,
+static void	intersect_top_cap(t_ray ray, t_p_cyl *cyl,
 				t_cylinder_intersect *d)
 {
 	t_vec3	p;
@@ -65,7 +64,7 @@ static void	intersect_top_cap(t_ray ray, t_cylinder *cyl,
 	}
 }
 
-static void	intersect_btm_cap(t_ray ray, t_cylinder *cyl,
+static void	intersect_btm_cap(t_ray ray, t_p_cyl *cyl,
 				t_cylinder_intersect *d)
 {
 	t_vec3	p;
@@ -81,7 +80,7 @@ static void	intersect_btm_cap(t_ray ray, t_cylinder *cyl,
 	}
 }
 
-void	intersect_cylinder_caps(t_ray ray, t_cylinder *cyl,
+void	intersect_cylinder_caps(t_ray ray, t_p_cyl *cyl,
 				t_cylinder_intersect *d)
 {
 	d->denom = ft_vec3_dot(ray.direction, d->axis_n);

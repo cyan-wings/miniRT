@@ -13,7 +13,7 @@
 #include "minirt.h"
 
 static void	init_cylinder_data(t_cylinder_intersect *d, t_ray *ray,
-		t_cylinder *cyl)
+		t_p_cyl *cyl)
 {
 	t_vec3	oc;
 	t_vec3	cross_dir_axis;
@@ -33,7 +33,7 @@ static void	init_cylinder_data(t_cylinder_intersect *d, t_ray *ray,
 	ft_memset(&d->best_hit, 0, sizeof(t_hit));
 }
 
-static int	check_cylinder_caps_with_axis(t_ray ray, t_cylinder *cyl,
+static int	check_cylinder_caps_with_axis(t_ray ray, t_p_cyl *cyl,
 		double t, t_vec3 axis_n)
 {
 	t_vec3	point;
@@ -48,7 +48,7 @@ static int	check_cylinder_caps_with_axis(t_ray ray, t_cylinder *cyl,
 	return (projection >= -half_h && projection <= half_h);
 }
 
-static t_hit	create_cylinder_side_hit(t_ray ray, t_cylinder *cyl,
+static t_hit	create_cylinder_side_hit(t_ray ray, t_p_cyl *cyl,
 		double t, t_vec3 axis_n)
 {
 	t_hit	hit;
@@ -70,17 +70,18 @@ static t_hit	create_cylinder_side_hit(t_ray ray, t_cylinder *cyl,
 		hit.normal = outward_normal;
 	else
 		hit.normal = ft_vec3_mult(outward_normal, -1.0);
-	hit.material = cyl->material;
 	return (hit);
 }
 
-void	intersect_cylinder_caps(t_ray ray, t_cylinder *cyl,
+void	intersect_cylinder_caps(t_ray ray, t_p_cyl *cyl,
 				t_cylinder_intersect *d);
 
-t_hit	intersect_cylinder(t_ray ray, t_cylinder *cyl)
+t_hit	intersect_cylinder(t_ray ray, void *cylinder, t_material *mat)
 {
 	t_cylinder_intersect	d;
+	t_p_cyl					*cyl;
 
+	cyl = (t_p_cyl *)cylinder;
 	init_cylinder_data(&d, &ray, cyl);
 	if (!(d.discriminant < 0.0 || ft_abs(d.a) < EPSILON))
 	{
@@ -99,5 +100,6 @@ t_hit	intersect_cylinder(t_ray ray, t_cylinder *cyl)
 		}
 	}
 	intersect_cylinder_caps(ray, cyl, &d);
+	d.best_hit.material = *mat;
 	return (d.best_hit);
 }

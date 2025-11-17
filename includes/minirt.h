@@ -22,6 +22,10 @@
 # include <fcntl.h>
 # include <sys/time.h>
 # include <stdlib.h>
+# include "material.h"
+# include "primitive.h"
+# include "ray.h"
+# include "scene.h"
 
 # if defined(__APPLE__)
 #  include "keys_macos.h"
@@ -51,156 +55,6 @@
 # define ERR_MALLOC "Error: Memory allocation failed"
 # define ERR_MLX "Error: MLX initialization failed"
 
-/* Color structure */
-typedef struct s_color
-{
-	double	r;
-	double	g;
-	double	b;
-}	t_color;
-
-/* Ray structure */
-typedef struct s_ray
-{
-	t_vec3	origin;
-	t_vec3	direction;
-}	t_ray;
-
-/* Material structure */
-typedef struct s_material
-{
-	t_color	color;
-	double	ambient;
-	double	diffuse;
-	double	specular;
-	double	shininess;
-	double	transparency;
-	double	refractive_index;
-	double	fuzz;
-}	t_material;
-
-/* Hit information */
-typedef struct s_hit
-{
-	int			hit;
-	double		t;
-	t_vec3		point;
-	t_vec3		normal;
-	t_material	material;
-	int			front_face;
-}	t_hit;
-
-/* Object types */
-typedef enum e_object_type
-{
-	OBJ_SPHERE,
-	OBJ_PLANE,
-	OBJ_CYLINDER
-}	t_object_type;
-
-/* Sphere structure */
-typedef struct s_sphere
-{
-	t_vec3		center;
-	double		radius;
-	t_material	material;
-}	t_sphere;
-
-/* Sphere intersection variables */
-typedef struct s_sphere_intersect
-{
-	double	a;
-	double	b;
-	double	c;
-	double	discriminant;
-	double	sqrtd;
-	double	t;
-}	t_sphere_intersect;
-
-/* Cylinder intersection variables */
-typedef struct s_cylinder_intersect
-{
-	t_vec3	axis_n;
-	double	half_h;
-	double	a;
-	double	b;
-	double	c;
-	double	discriminant;
-	double	sqrtd;
-	double	t_side;
-	double	denom;
-	t_vec3	top_cap_center;
-	t_vec3	btm_cap_center;
-	double	t_top_cap;
-	double	t_btm_cap;
-	t_hit	best_hit;
-}	t_cylinder_intersect;
-
-/* Plane structure */
-typedef struct s_plane
-{
-	t_vec3		point;
-	t_vec3		normal;
-	t_material	material;
-}	t_plane;
-
-/* Cylinder structure */
-typedef struct s_cylinder
-{
-	t_vec3		center;
-	t_vec3		axis;
-	double		radius;
-	double		height;
-	t_material	material;
-}	t_cylinder;
-
-/* Object structure */
-typedef struct s_object
-{
-	t_object_type		type;
-	void				*data;
-}	t_object;
-
-/* Camera structure */
-typedef struct s_camera
-{
-	t_vec3	position;
-	t_vec3	direction;
-	t_vec3	up;
-	t_vec3	right;
-	double	fov;
-	double	aspect_ratio;
-	double	viewport_width;
-	double	viewport_height;
-	double	scatter_angle;
-	int		rays_per_pixel;
-}	t_camera;
-
-/* Light structure */
-typedef struct s_light
-{
-	t_vec3	position;
-	t_color	color;
-	double	brightness;
-}	t_light;
-
-/* Ambient light structure */
-typedef struct s_ambient
-{
-	t_color	color;
-	double	ratio;
-}	t_ambient;
-
-/* Scene structure */
-typedef struct s_scene
-{
-	t_camera	camera;
-	t_light		light;
-	t_ambient	ambient;
-	t_object	objects[MAX_OBJECTS];
-	int			object_count;
-}	t_scene;
-
 /* MLX data structure */
 typedef struct s_mlx_data
 {
@@ -224,15 +78,6 @@ typedef struct s_minirt
 
 /* Main */
 int			main(int argc, char **argv);
-
-/* Parser */
-int			parse_scene(const char *filename, t_scene *scene);
-int			parse_ambient(char **tokens, t_scene *scene);
-int			parse_camera(char **tokens, t_scene *scene);
-int			parse_light(char **tokens, t_scene *scene);
-int			parse_sphere(char **tokens, t_scene *scene);
-int			parse_plane(char **tokens, t_scene *scene);
-int			parse_cylinder(char **tokens, t_scene *scene);
 
 /* Vector utilities - from libft ft_math_utils.h */
 t_vec3		ft_vec3_refract(t_vec3 uv, t_vec3 n, double etai_over_etat);
@@ -258,22 +103,12 @@ t_vec3		camera_base_direction(t_camera *camera, double u, double v);
 t_ray		camera_get_ray_scattered(t_camera *camera, t_vec3 direction,
 				double jitter_u, double jitter_v);
 
-/* Collision detection */
-t_hit		intersect_scene(t_ray ray, t_scene *scene);
-t_hit		intersect_sphere(t_ray ray, t_sphere *sphere);
-t_hit		intersect_plane(t_ray ray, t_plane *plane);
-t_hit		intersect_cylinder(t_ray ray, t_cylinder *cylinder);
-
 /* Lighting */
 t_color		calculate_lighting(t_hit hit, t_scene *scene, t_ray ray);
 
 /* Renderer */
 void		render_scene(t_minirt *minirt);
 void		put_pixel(t_mlx_data *data, int x, int y, int color);
-
-/* Object management */
-void		object_add(t_scene *scene, t_object_type type, void *data);
-void		objects_free(t_scene *scene);
 
 /* Material */
 t_material	material_create(double ambient,

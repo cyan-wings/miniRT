@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   intersect_plane.c                                  :+:      :+:    :+:   */
+/*   parse.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: myeow <myeow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,31 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minirt.h"
+#ifndef PARSE_H
+# define PARSE_H
 
-t_hit	intersect_plane(t_ray ray, void *pln, t_material *mat)
+# include "ft_string_utils.h"
+# include "ft_mem_utils.h"
+# include "primitive.h"
+# include "scene.h"
+
+typedef int		(*t_parse_meta_fn)(char **, t_scene *);
+typedef t_prm	(*t_parse_prm_fn)(char **);
+
+typedef struct	s_meta_function_table
 {
-	t_hit	hit;
-	double	denom;
-	double	t;
-	t_vec3	p0l0;
-	t_p_pln	*plane;
+	const char		*id;
+	t_parse_meta_fn	fn;
+}	t_meta_ft;
 
-	plane = (t_p_pln *)pln;
-	ft_memset(&hit, 0, sizeof(t_hit));
-	denom = ft_vec3_dot(plane->normal, ray.direction);
-	if (ft_abs(denom) < EPSILON)
-		return (hit);
-	p0l0 = ft_vec3_sub(plane->point, ray.origin);
-	t = ft_vec3_dot(p0l0, plane->normal) / denom;
-	if (t < EPSILON)
-		return (hit);
-	hit.hit = 1;
-	hit.t = t;
-	hit.point = ray_at(ray, t);
-	hit.front_face = (ft_vec3_dot(ray.direction, plane->normal) < 0);
-	if (hit.front_face)
-		hit.normal = plane->normal;
-	else
-		hit.normal = ft_vec3_mult(plane->normal, -1.0);
-	hit.material = *mat;
-	return (hit);
-}
+typedef struct	s_prm_function_table
+{
+	const char		*id;
+	t_parse_prm_fn	fn;
+}	t_prm_ft;
+
+t_color	parse_color(char *str);
+void	parse_material(char **tokens, t_material *mat);
+t_vec3	parse_vector(char *str);
+
+#endif

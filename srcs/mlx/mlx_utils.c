@@ -35,7 +35,6 @@ int	handle_key(int keycode, t_minirt *minirt)
 	if (keycode == 65307)
 	{
 		cleanup_mlx(&minirt->mlx_data);
-		objects_free(&minirt->scene);
 		exit(0);
 	}
 	return (0);
@@ -44,7 +43,6 @@ int	handle_key(int keycode, t_minirt *minirt)
 int	handle_close(t_minirt *minirt)
 {
 	cleanup_mlx(&minirt->mlx_data);
-	objects_free(&minirt->scene);
 	exit(0);
 }
 

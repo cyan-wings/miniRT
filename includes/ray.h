@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   intersect_plane.c                                  :+:      :+:    :+:   */
+/*   ray.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: myeow <myeow@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minirt.h"
+#ifndef RAY_H
+# define RAY_H
 
-t_hit	intersect_plane(t_ray ray, void *pln, t_material *mat)
+#include "ft_math_utils.h"
+
+// Ray structure
+typedef struct s_ray
 {
-	t_hit	hit;
-	double	denom;
-	double	t;
-	t_vec3	p0l0;
-	t_p_pln	*plane;
+	t_vec3	origin;
+	t_vec3	direction;
+}	t_ray;
 
-	plane = (t_p_pln *)pln;
-	ft_memset(&hit, 0, sizeof(t_hit));
-	denom = ft_vec3_dot(plane->normal, ray.direction);
-	if (ft_abs(denom) < EPSILON)
-		return (hit);
-	p0l0 = ft_vec3_sub(plane->point, ray.origin);
-	t = ft_vec3_dot(p0l0, plane->normal) / denom;
-	if (t < EPSILON)
-		return (hit);
-	hit.hit = 1;
-	hit.t = t;
-	hit.point = ray_at(ray, t);
-	hit.front_face = (ft_vec3_dot(ray.direction, plane->normal) < 0);
-	if (hit.front_face)
-		hit.normal = plane->normal;
-	else
-		hit.normal = ft_vec3_mult(plane->normal, -1.0);
-	hit.material = *mat;
-	return (hit);
-}
+#endif
+

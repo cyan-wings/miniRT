@@ -46,6 +46,8 @@ static void	init_minirt(t_minirt *minirt)
 	ft_memset(minirt, 0, sizeof(t_minirt));
 }
 
+int	parse_scene(const char *filename, t_scene *scene);
+
 int	main(int argc, char **argv)
 {
 	t_minirt	minirt;
