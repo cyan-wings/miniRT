@@ -38,6 +38,8 @@ static void	parse_material_glass(char **tokens, t_material *mat)
 static void	parse_material_diffuse(char **tokens, t_material *mat)
 {
 	mat->type = DIFFUSE;
+	if (!tokens[1] || !tokens[2] || !tokens[3] || !tokens[4])
+		return ;
 	mat->data.dif.ambient = ft_atof(tokens[1]);
 	mat->data.dif.diffuse = ft_atof(tokens[2]);
 	mat->data.dif.specular = ft_atof(tokens[3]);

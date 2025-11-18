@@ -37,4 +37,7 @@ t_color	parse_color(char *str);
 void	parse_material(char **tokens, t_material *mat);
 t_vec3	parse_vector(char *str);
 
+void	apply_scene_defaults(t_scene *scene);
+double	ft_deg_to_rad(double deg);
+
 #endif

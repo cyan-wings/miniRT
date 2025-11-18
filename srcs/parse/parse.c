@@ -117,5 +117,7 @@ int	parse_scene(const char *filename, t_scene *scene)
 		ft_memdel((void **)&line);
 	}
 	close(fd);
+	if (result)
+		apply_scene_defaults(scene);
 	return (result);
 }

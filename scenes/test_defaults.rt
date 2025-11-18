@@ -1,0 +1,5 @@
+# Test scene with only objects - should use default A, C, L
+
+sp 0,0,-20 5 255,0,0
+sp 10,5,-25 3 0,255,0
+pl 0,-5,0 0,1,0 100,100,100

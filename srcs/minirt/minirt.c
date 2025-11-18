@@ -61,6 +61,7 @@ int	main(int argc, char **argv)
 		cleanup_and_exit(&minirt, ERR_MLX);
 	camera_init(&minirt.scene.camera);
 	render_scene(&minirt);
+	ft_printf("Rendering complete\n");
 	mlx_key_hook(minirt.mlx_data.win, handle_key, &minirt);
 	mlx_hook(minirt.mlx_data.win, 17, 0, handle_close, &minirt);
 	mlx_loop(minirt.mlx_data.mlx);
