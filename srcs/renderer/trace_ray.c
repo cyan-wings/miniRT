@@ -15,48 +15,7 @@
 
 t_hit	intersect_scene(t_ray ray, t_scene *scene);
 
-t_color	trace_ray(t_ray ray, t_scene *scene, int depth);
-
-static void	init_trace_glass_vars(t_ray ray, t_hit *hit, t_trc_gls *buf)
-{
-	buf->attenuation = hit->material.color;
-	if (hit->front_face)
-		buf->ri = (1.0 / hit->material.data.gls.refractive_index);
-	else
-		buf->ri = hit->material.data.gls.refractive_index;
-	buf->unit_direction = ft_vec3_normalize(ray.direction);
-	buf->cos_theta = fmin(ft_vec3_dot(ft_vec3_mult(buf->unit_direction, -1.0),
-				hit->normal), 1.0);
-	buf->sin_theta = ft_sqrt(1.0 - buf->cos_theta * buf->cos_theta);
-}
-
-static t_color	trace_glass(t_ray ray, t_hit hit, t_scene *scene, int depth)
-{
-	t_trc_gls	buf;
-	t_vec3		direction;
-
-	init_trace_glass_vars(ray, &hit, &buf);
-	if (buf.ri * buf.sin_theta > 1.0
-		|| schlick_reflectance(buf.cos_theta, buf.ri) > random_double())
-	{
-		if (!hit.front_face)
-			buf.attenuation = (t_color){1, 1, 1};
-		direction = ft_vec3_reflect(buf.unit_direction, hit.normal);
-	}
-	else
-	{
-		direction = ft_vec3_refract(buf.unit_direction, hit.normal, buf.ri);
-		if (ft_vec3_length(direction) < EPSILON)
-			direction = ft_vec3_reflect(buf.unit_direction, hit.normal);
-	}
-	if (hit.material.data.gls.fuzz > EPSILON)
-		direction = ft_vec3_add(direction,
-				ft_vec3_mult(ft_vec3_random_unit_vector(),
-					hit.material.data.gls.fuzz));
-	direction = ft_vec3_normalize(direction);
-	return (color_multiply(trace_ray(calc_refracted_ray(&hit, direction),
-				scene, depth - 1), buf.attenuation));
-}
+t_color	trace_ray(t_ray ray, t_scene *scene, int depth, int max_splits);
 
 t_color	calculate_lighting(t_hit *hit, t_scene *scene, t_ray ray);
 
@@ -69,7 +28,7 @@ t_ray	calc_reflected_ray(t_hit *hit, t_vec3 reflected_dir);
 //	return (color_add(
 //		color_scale(local_color, (1.0 - hit.material.shininess)),
 //		color_scale(reflected_color, hit.material.shininess)));
-t_color	trace_ray(t_ray ray, t_scene *scene, int depth)
+t_color	trace_ray(t_ray ray, t_scene *scene, int depth, int max_splits)
 {
 	t_hit	hit;
 	t_color	local_color;
@@ -82,13 +41,13 @@ t_color	trace_ray(t_ray ray, t_scene *scene, int depth)
 	if (!hit.hit)
 		return ((t_color){0, 0, 0});
 	if (hit.material.type == GLASS)
-		return (trace_glass(ray, hit, scene, depth));
+		return (trace_glass(ray, hit, scene, depth, max_splits));
 	local_color = calculate_lighting(&hit, scene, ray);
 	reflected_dir = ft_vec3_reflect(ray.direction, hit.normal);
 	if (ft_vec3_length(reflected_dir) < EPSILON)
 		return (local_color);
 	reflected_color = trace_ray(calc_reflected_ray(&hit, reflected_dir),
-			scene, depth - 1);
+			scene, depth - 1, max_splits);
 	return (color_add(
 			local_color,
 			color_scale(color_multiply(reflected_color, hit.material.color),

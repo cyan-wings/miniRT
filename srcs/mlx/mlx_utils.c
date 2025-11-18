@@ -12,31 +12,6 @@
 
 #include "minirt.h"
 
-int	main_loop(t_minirt *minirt)
-{
-	int		rpp;
-
-	if (!minirt->rendered)
-	{
-		if (minirt->current_y < WIN_HEIGHT)
-		{
-			rpp = minirt->scene.camera.rays_per_pixel;
-			if (rpp < 1)
-				rpp = 1;
-			render_line(minirt, minirt->current_y, rpp);
-			minirt->current_y++;
-			if (minirt->current_y % 10 == 0 || minirt->current_y == WIN_HEIGHT)
-				mlx_put_image_to_window(minirt->mlx_data.mlx,
-					minirt->mlx_data.win, minirt->mlx_data.img, 0, 0);
-		}
-		else
-		{
-			minirt->rendered = 1;
-			ft_printf("Rendering complete\n");
-		}
-	}
-	return (0);
-}
 
 int	init_mlx(t_mlx_data *data)
 {

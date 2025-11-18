@@ -40,6 +40,7 @@
 
 /* Ray tracing constants */
 # define MAX_DEPTH 10
+# define MAX_SPLITS 4
 # define EPSILON 1e-6
 # define INFINITY_F 1e30
 # define MAX_OBJECTS 100

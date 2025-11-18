@@ -15,6 +15,9 @@
 
 # include "color.h"
 # include "ft_math_utils.h"
+# include "ray.h"
+# include "hit.h"
+# include "scene.h"
 
 // Ray trace glass variables
 typedef struct s_trace_glass
@@ -26,5 +29,8 @@ typedef struct s_trace_glass
 	double	sin_theta;
 	t_vec3	direction;
 }	t_trc_gls;
+
+t_color	trace_glass(t_ray ray, t_hit hit, t_scene *scene, int depth,
+			int max_splits);
 
 #endif
