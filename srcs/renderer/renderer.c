@@ -36,7 +36,7 @@ static void	get_jitters(int rpp, double *jitter_u, double *jitter_v)
 	}
 }
 
-t_color	trace_ray(t_ray ray, t_scene *scene, int depth, int max_splits);
+t_color	trace_ray(t_ray ray, t_scene *scene, int depth);
 
 static t_color	get_pixel_color(int rpp, int x, int y, t_scene *scene)
 {
@@ -55,8 +55,7 @@ static t_color	get_pixel_color(int rpp, int x, int y, t_scene *scene)
 					&scene->camera, (x + jitter_u) / (WIN_WIDTH - 1),
 					(WIN_HEIGHT - 1.0 - y + jitter_v) / (WIN_HEIGHT - 1)),
 				jitter_u, jitter_v);
-		pixel_color = color_add(pixel_color, trace_ray(ray, scene, MAX_DEPTH,
-					MAX_SPLITS));
+		pixel_color = color_add(pixel_color, trace_ray(ray, scene, MAX_DEPTH));
 	}
 	return (color_scale(pixel_color, 1 / (double)rpp));
 }

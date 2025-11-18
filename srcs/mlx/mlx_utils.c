@@ -12,7 +12,6 @@
 
 #include "minirt.h"
 
-
 int	init_mlx(t_mlx_data *data)
 {
 	data->mlx = mlx_init();

@@ -30,7 +30,11 @@ typedef struct s_trace_glass
 	t_vec3	direction;
 }	t_trc_gls;
 
-t_color	trace_glass(t_ray ray, t_hit hit, t_scene *scene, int depth,
-			int max_splits);
+typedef struct s_glass_ray {
+	t_vec3 dir;
+	t_color color;
+}	t_glass_ray;
+
+t_color	trace_glass(t_ray ray, t_hit hit, t_scene *scene, int depth);
 
 #endif

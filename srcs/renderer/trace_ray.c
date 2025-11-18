@@ -15,7 +15,7 @@
 
 t_hit	intersect_scene(t_ray ray, t_scene *scene);
 
-t_color	trace_ray(t_ray ray, t_scene *scene, int depth, int max_splits);
+t_color	trace_ray(t_ray ray, t_scene *scene, int depth);
 
 t_color	calculate_lighting(t_hit *hit, t_scene *scene, t_ray ray);
 
@@ -28,7 +28,7 @@ t_ray	calc_reflected_ray(t_hit *hit, t_vec3 reflected_dir);
 //	return (color_add(
 //		color_scale(local_color, (1.0 - hit.material.shininess)),
 //		color_scale(reflected_color, hit.material.shininess)));
-t_color	trace_ray(t_ray ray, t_scene *scene, int depth, int max_splits)
+t_color	trace_ray(t_ray ray, t_scene *scene, int depth)
 {
 	t_hit	hit;
 	t_color	local_color;
@@ -41,13 +41,13 @@ t_color	trace_ray(t_ray ray, t_scene *scene, int depth, int max_splits)
 	if (!hit.hit)
 		return ((t_color){0, 0, 0});
 	if (hit.material.type == GLASS)
-		return (trace_glass(ray, hit, scene, depth, max_splits));
+		return (trace_glass(ray, hit, scene, depth));
 	local_color = calculate_lighting(&hit, scene, ray);
 	reflected_dir = ft_vec3_reflect(ray.direction, hit.normal);
 	if (ft_vec3_length(reflected_dir) < EPSILON)
 		return (local_color);
 	reflected_color = trace_ray(calc_reflected_ray(&hit, reflected_dir),
-			scene, depth - 1, max_splits);
+			scene, depth - 1);
 	return (color_add(
 			local_color,
 			color_scale(color_multiply(reflected_color, hit.material.color),

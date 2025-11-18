@@ -13,7 +13,7 @@
 #include "trace.h"
 #include "minirt.h"
 
-t_color	trace_ray(t_ray ray, t_scene *scene, int depth, int max_splits);
+t_color	trace_ray(t_ray ray, t_scene *scene, int depth);
 
 static void	init_trace_glass_vars(t_ray ray, t_hit *hit, t_trc_gls *buf)
 {
@@ -63,50 +63,41 @@ static t_color	trace_single_path(t_ray ray, t_hit *hit, t_scene *scene,
 	}
 	direction = apply_fuzz(direction, hit->material.data.gls.fuzz);
 	return (color_multiply(trace_ray(calc_refracted_ray(hit, direction),
-				scene, depth - 1, 0), buf.attenuation));
+				scene, depth - 1), buf.attenuation));
 }
 
 static t_color	trace_split_paths(t_ray ray, t_hit *hit, t_scene *scene,
-	int depth, int split_budget)
+	int depth)
 {
 	t_trc_gls	buf;
-	t_vec3		reflect_dir;
-	t_vec3		refract_dir;
-	t_color		reflect_color;
-	t_color		refract_color;
+	t_glass_ray	reflect;
+	t_glass_ray	refract;
 	double		fresnel;
 
 	init_trace_glass_vars(ray, hit, &buf);
 	fresnel = schlick_reflectance(buf.cos_theta, buf.ri);
-	reflect_dir = ft_vec3_reflect(buf.unit_direction, hit->normal);
-	reflect_dir = apply_fuzz(reflect_dir, hit->material.data.gls.fuzz);
-	refract_dir = ft_vec3_refract(buf.unit_direction, hit->normal, buf.ri);
-	if (ft_vec3_length(refract_dir) < EPSILON)
-		refract_dir = reflect_dir;
-	refract_dir = apply_fuzz(refract_dir, hit->material.data.gls.fuzz);
-	reflect_color = trace_ray(calc_refracted_ray(hit, reflect_dir),
-			scene, depth - 1, split_budget);
-	refract_color = trace_ray(calc_refracted_ray(hit, refract_dir),
-			scene, depth - 1, split_budget);
+	reflect.dir = ft_vec3_reflect(buf.unit_direction, hit->normal);
+	reflect.dir = apply_fuzz(reflect.dir, hit->material.data.gls.fuzz);
+	refract.dir = ft_vec3_refract(buf.unit_direction, hit->normal, buf.ri);
+	if (ft_vec3_length(refract.dir) < EPSILON)
+		refract.dir = reflect.dir;
+	refract.dir = apply_fuzz(refract.dir, hit->material.data.gls.fuzz);
+	reflect.color = trace_ray(calc_refracted_ray(hit, reflect.dir),
+			scene, depth - 2);
+	refract.color = trace_ray(calc_refracted_ray(hit, refract.dir),
+			scene, depth - 2);
 	if (!hit->front_face)
-		reflect_color = color_scale(reflect_color, 1.0);
-	return (color_multiply(color_add(color_scale(reflect_color, fresnel),
-				color_scale(refract_color, 1.0 - fresnel)), buf.attenuation));
+		reflect.color = color_scale(reflect.color, 1.0);
+	return (color_multiply(color_add(color_scale(reflect.color, fresnel),
+				color_scale(refract.color, 1.0 - fresnel)), buf.attenuation));
 }
 
-t_color	trace_glass(t_ray ray, t_hit hit, t_scene *scene, int depth,
-	int max_splits)
+t_color	trace_glass(t_ray ray, t_hit hit, t_scene *scene, int depth)
 {
 	t_trc_gls	buf;
-	int			split_budget;
 
 	init_trace_glass_vars(ray, &hit, &buf);
 	if (buf.ri * buf.sin_theta > 1.0)
 		return (trace_single_path(ray, &hit, scene, depth));
-	if (max_splits > 0)
-	{
-		split_budget = (max_splits - 1) / 2;
-		return (trace_split_paths(ray, &hit, scene, depth, split_budget));
-	}
-	return (trace_single_path(ray, &hit, scene, depth));
+	return (trace_split_paths(ray, &hit, scene, depth));
 }

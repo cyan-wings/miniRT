@@ -28,21 +28,25 @@ static int	validate_rgb(int rgb[3])
 		&& rgb[2] >= 0 && rgb[2] <= 255);
 }
 
-static t_color get_color(int r, int g, int b)
+static t_color	get_color(char	**components)
 {
-	t_color color;
+	int	rgb[3];
 
-	color.r = r / 255.0;
-	color.g = g / 255.0;
-	color.b = b / 255.0;
-	return (color);
+	rgb[0] = ft_atoi(components[0]);
+	rgb[1] = ft_atoi(components[1]);
+	rgb[2] = ft_atoi(components[2]);
+	if (!validate_rgb(rgb))
+	{
+		parse_error(1, 1);
+		return ((t_color){0, 0, 0});
+	}
+	return ((t_color){rgb[0] / 255.0, rgb[1] / 255.0, rgb[2] / 255.0});
 }
 
 t_color	parse_color(char *str)
 {
 	char	**components;
 	t_color	color;
-	int		rgb[3];
 
 	components = ft_split(str, ',');
 	if (!components)
@@ -56,15 +60,7 @@ t_color	parse_color(char *str)
 		parse_error(1, 1);
 		return ((t_color){0, 0, 0});
 	}
-	rgb[0] = ft_atoi(components[0]);
-	rgb[1] = ft_atoi(components[1]);
-	rgb[2] = ft_atoi(components[2]);
+	color = get_color(components);
 	ft_free_array((void **)components);
-	if (!validate_rgb(rgb))
-	{
-		parse_error(1, 1);
-		return ((t_color){0, 0, 0});
-	}
-	color = get_color(rgb[0], rgb[1], rgb[2]);
 	return (color);
 }
