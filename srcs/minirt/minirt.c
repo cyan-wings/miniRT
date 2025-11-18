@@ -60,10 +60,11 @@ int	main(int argc, char **argv)
 	if (!init_mlx(&minirt.mlx_data))
 		cleanup_and_exit(&minirt, ERR_MLX);
 	camera_init(&minirt.scene.camera);
-	render_scene(&minirt);
-	ft_printf("Rendering complete\n");
-	mlx_key_hook(minirt.mlx_data.win, handle_key, &minirt);
-	mlx_hook(minirt.mlx_data.win, 17, 0, handle_close, &minirt);
+	mlx_loop_hook(minirt.mlx_data.mlx, main_loop, &minirt);
+	mlx_hook(minirt.mlx_data.win, ON_KEYDOWN, KEY_PRESS_MASK,
+		handle_key, &minirt);
+	mlx_hook(minirt.mlx_data.win, ON_DESTROY, NO_EVENT_MASK,
+		handle_close, &minirt);
 	mlx_loop(minirt.mlx_data.mlx);
 	return (0);
 }

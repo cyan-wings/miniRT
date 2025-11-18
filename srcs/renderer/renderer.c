@@ -60,12 +60,25 @@ static t_color	get_pixel_color(int rpp, int x, int y, t_scene *scene)
 	return (color_scale(pixel_color, 1 / (double)rpp));
 }
 
-void	render_scene(t_minirt *minirt)
+void	render_line(t_minirt *minirt, int y, int rpp)
 {
 	int		x;
+	int		color_int;
+
+	x = 0;
+	while (x < WIN_WIDTH)
+	{
+		color_int = color_to_int(get_pixel_color(rpp, x, y,
+					&minirt->scene));
+		put_pixel(&minirt->mlx_data, x, y, color_int);
+		x++;
+	}
+}
+
+void	render_scene(t_minirt *minirt)
+{
 	int		y;
 	int		rpp;
-	int		color_int;
 
 	y = 0;
 	rpp = minirt->scene.camera.rays_per_pixel;
@@ -73,14 +86,7 @@ void	render_scene(t_minirt *minirt)
 		rpp = 1;
 	while (y < WIN_HEIGHT)
 	{
-		x = 0;
-		while (x < WIN_WIDTH)
-		{
-			color_int = color_to_int(get_pixel_color(rpp, x, y,
-						&minirt->scene));
-			put_pixel(&minirt->mlx_data, x, y, color_int);
-			x++;
-		}
+		render_line(minirt, y, rpp);
 		y++;
 	}
 	mlx_put_image_to_window(minirt->mlx_data.mlx, minirt->mlx_data.win,

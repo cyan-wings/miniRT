@@ -107,6 +107,7 @@ int	parse_scene(const char *filename, t_scene *scene)
 	if (fd < 0)
 		return (0);
 	ft_memset(scene, 0, sizeof(t_scene));
+	apply_scene_defaults(scene);
 	result = 1;
 	while (result)
 	{
@@ -117,7 +118,5 @@ int	parse_scene(const char *filename, t_scene *scene)
 		ft_memdel((void **)&line);
 	}
 	close(fd);
-	if (result)
-		apply_scene_defaults(scene);
 	return (result);
 }

@@ -38,19 +38,29 @@ static void	parse_material_glass(char **tokens, t_material *mat)
 static void	parse_material_diffuse(char **tokens, t_material *mat)
 {
 	mat->type = DIFFUSE;
-	if (!tokens[1] || !tokens[2] || !tokens[3] || !tokens[4])
+	if (!tokens[1])
 		return ;
 	mat->data.dif.ambient = ft_atof(tokens[1]);
+	if (!tokens[2])
+		return ;
 	mat->data.dif.diffuse = ft_atof(tokens[2]);
+	if (!tokens[3])
+		return ;
 	mat->data.dif.specular = ft_atof(tokens[3]);
+	if (!tokens[4])
+		return ;
 	mat->data.dif.shininess = ft_atof(tokens[4]);
 }
 
-void	parse_material(char **tokens, t_material *mat)
+int	parse_material(char **tokens, t_material *mat)
 {
+	parse_error(1, 0);
 	mat->color = parse_color(tokens[0]);
+	if (parse_error(0, 0))
+		return (0);
 	if (tokens[1] && ft_strcmp(tokens[1], "glass") == 0)
 		parse_material_glass(tokens, mat);
 	else
 		parse_material_diffuse(tokens, mat);
+	return (1);
 }

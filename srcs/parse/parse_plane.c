@@ -22,7 +22,8 @@ t_prm	parse_plane(char **tokens)
 	pln.type = PLANE;
 	pln.data.pln.point = parse_vector(tokens[1]);
 	pln.data.pln.normal = ft_vec3_normalize(parse_vector(tokens[2]));
-	parse_material(&tokens[3], &pln.mat);
+	if (!parse_material(&tokens[3], &pln.mat))
+		return ((t_prm){0});
 	pln.intersect_fn = intersect_plane;
 	return (pln);
 }

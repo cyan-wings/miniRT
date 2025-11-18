@@ -33,8 +33,9 @@ typedef struct s_prm_function_table
 	t_parse_prm_fn	fn;
 }	t_prm_ft;
 
+int		parse_error(int set, int value);
 t_color	parse_color(char *str);
-void	parse_material(char **tokens, t_material *mat);
+int		parse_material(char **tokens, t_material *mat);
 t_vec3	parse_vector(char *str);
 
 void	apply_scene_defaults(t_scene *scene);

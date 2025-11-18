@@ -72,6 +72,8 @@ typedef struct s_minirt
 {
 	t_scene		scene;
 	t_mlx_data	mlx_data;
+	int			rendered;
+	int			current_y;
 }	t_minirt;
 
 /* Main */
@@ -103,10 +105,12 @@ t_ray		camera_get_ray_scattered(t_camera *camera, t_vec3 direction,
 
 /* Renderer */
 void		render_scene(t_minirt *minirt);
+void		render_line(t_minirt *minirt, int y, int rpp);
 void		put_pixel(t_mlx_data *data, int x, int y, int color);
 
 /* MLX utilities */
 int			init_mlx(t_mlx_data *data);
+int			main_loop(t_minirt *minirt);
 int			handle_key(int keycode, t_minirt *minirt);
 int			handle_close(t_minirt *minirt);
 void		cleanup_mlx(t_mlx_data *data);

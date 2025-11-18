@@ -24,7 +24,8 @@ t_prm	parse_cylinder(char **tokens)
 	cyl.data.cyl.axis = ft_vec3_normalize(parse_vector(tokens[2]));
 	cyl.data.cyl.radius = ft_atof(tokens[3]) / 2.0;
 	cyl.data.cyl.height = ft_atof(tokens[4]);
-	parse_material(&tokens[5], &cyl.mat);
+	if (!parse_material(&tokens[5], &cyl.mat))
+		return ((t_prm){0});
 	cyl.intersect_fn = intersect_cylinder;
 	return (cyl);
 }

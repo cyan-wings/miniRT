@@ -22,7 +22,8 @@ t_prm	parse_sphere(char **tokens)
 	sph.type = SPHERE;
 	sph.data.sph.center = parse_vector(tokens[1]);
 	sph.data.sph.radius = ft_atof(tokens[2]) / 2.0;
-	parse_material(&tokens[3], &sph.mat);
+	if (!parse_material(&tokens[3], &sph.mat))
+		return ((t_prm){0});
 	sph.intersect_fn = intersect_sphere;
 	return (sph);
 }

@@ -69,5 +69,13 @@
 #  define MOUSE_SCRUP 4
 #  define MOUSE_SCRDN 5
 
+#  define ON_KEYDOWN 2
+#  define ON_KEYUP 3
+#  define ON_DESTROY 17
+
+#  define KEY_PRESS_MASK (1L<<0)
+#  define KEY_RELEASE_MASK (1L<<1)
+#  define NO_EVENT_MASK 0L
+
 # endif
 #endif
