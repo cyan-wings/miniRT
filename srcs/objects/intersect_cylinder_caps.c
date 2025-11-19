@@ -32,7 +32,7 @@ void	init_cylinder_caps(t_ray ray, t_p_cyl *cyl,
 }
 
 static t_hit	create_cylinder_cap_hit(t_ray ray, t_p_cyl *cyl,
-		double t, int top)
+	double t, int top)
 {
 	t_hit	hit;
 	t_vec3	norm;

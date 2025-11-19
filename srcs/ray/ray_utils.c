@@ -43,8 +43,8 @@ t_ray	calc_refracted_ray(t_hit *hit, t_vec3 direction)
 	t_vec3	offset;
 	t_vec3	origin;
 
-	offset = ft_vec3_mult(ft_vec3_normalize(direction), EPSILON);
-	origin = ft_vec3_add(hit->point, offset);
+	offset = ft_vec3_mult(ft_vec3_normalize(hit->normal), EPSILON);
+	origin = ft_vec3_sub(hit->point, offset);
 	return (ray_create(origin, direction));
 }
 

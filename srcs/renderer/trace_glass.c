@@ -17,7 +17,7 @@ t_color	trace_ray(t_ray ray, t_scene *scene, int depth);
 
 static void	init_trace_glass_vars(t_ray ray, t_hit *hit, t_trc_gls *buf)
 {
-	buf->attenuation = hit->material.color;
+	buf->attenuation = (t_color){1, 1, 1};
 	if (hit->front_face)
 		buf->ri = (1.0 / hit->material.data.gls.refractive_index);
 	else
@@ -83,9 +83,9 @@ static t_color	trace_split_paths(t_ray ray, t_hit *hit, t_scene *scene,
 		refract.dir = reflect.dir;
 	refract.dir = apply_fuzz(refract.dir, hit->material.data.gls.fuzz);
 	reflect.color = trace_ray(calc_refracted_ray(hit, reflect.dir),
-			scene, depth - 2);
+			scene, depth / 2);
 	refract.color = trace_ray(calc_refracted_ray(hit, refract.dir),
-			scene, depth - 2);
+			scene, depth / 2);
 	if (!hit->front_face)
 		reflect.color = color_scale(reflect.color, 1.0);
 	return (color_multiply(color_add(color_scale(reflect.color, fresnel),
