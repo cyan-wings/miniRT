@@ -94,8 +94,8 @@ void				ft_quatset_id(t_quat *out);
 void				ft_quatcpy(t_quat *q, t_quat *out);
 int					ft_quat_isequal(t_quat *q1, t_quat *q2);
 void				ft_quat_print(t_quat *q);
-void				ft_quat_from_axis_angle(t_vec3 *axis, double r, \
-		t_quat *out);
+void				ft_quat_from_axis_angle(t_vec3 *axis, double r,
+						t_quat *out);
 void				ft_quat_from_xrotation(double r, t_quat *out);
 void				ft_quat_from_yrotation(double r, t_quat *out);
 void				ft_quat_from_zrotation(double r, t_quat *out);
@@ -107,8 +107,8 @@ void				ft_quat_to_euler_zyx(t_quat *q, t_vec3 *out);
 void				ft_quat_conjugate(t_quat *q, t_quat *out);
 void				ft_quat_mult(t_quat *q1, t_quat *q2, t_quat *out);
 void				ft_quat_rotate(t_vec3 *v, t_quat *q, t_vec3 *out);
-void				ft_quat_slerp(t_quat *q1, t_quat *q2, double t, \
-		t_quat *out);
+void				ft_quat_slerp(t_quat *q1, t_quat *q2, double t,
+						t_quat *out);
 
 //VEC3_UTILS
 t_vec3				ft_vec3_add(t_vec3 a, t_vec3 b);

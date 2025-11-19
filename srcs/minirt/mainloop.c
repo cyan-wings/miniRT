@@ -12,7 +12,7 @@
 
 #include "minirt.h"
 
-int			main_loop(t_minirt *minirt)
+int	main_loop(t_minirt *minirt)
 {
 	if (minirt->rendered)
 		return (0);

@@ -73,8 +73,8 @@
 #  define ON_KEYUP 3
 #  define ON_DESTROY 17
 
-#  define KEY_PRESS_MASK (1L<<0)
-#  define KEY_RELEASE_MASK (1L<<1)
+#  define KEY_PRESS_MASK 1L
+#  define KEY_RELEASE_MASK 2L
 #  define NO_EVENT_MASK 0L
 
 # endif

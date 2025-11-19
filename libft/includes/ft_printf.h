@@ -84,8 +84,8 @@ void	ft_flush_buffer(t_data *data);
 void	ft_write_buffer(t_data *data, int c);
 void	ft_appendchar_buffer(t_data *data, int c, int n);
 void	ft_appendstr_buffer(t_data *data, const char *str, int n);
-void	ft_appendnbr_buffer(t_data *data, long long int n, \
-		char *base, int base_len);
+void	ft_appendnbr_buffer(t_data *data, long long int n,
+			char *base, int base_len);
 
 int		ft_printchar(t_data *data, int c);
 int		ft_printstring(t_data *data, const char *str);

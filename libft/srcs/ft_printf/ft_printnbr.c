@@ -62,8 +62,8 @@ int	ft_printnbr(t_data *data, long long int n, char *base, int base_len)
 	int	p;
 	int	nlen;
 
-	w = data->flags.width - (data->flags.sharp * 2) - \
-		((n < 0) || data->flags.cross || data->flags.space);
+	w = data->flags.width - (data->flags.sharp * 2)
+		- ((n < 0) || data->flags.cross || data->flags.space);
 	p = data->flags.precision;
 	nlen = ft_nbrlen_base(n, base_len) * !check_zero_int(data, n);
 	p = nlen + ((p >= nlen) * (p - nlen));

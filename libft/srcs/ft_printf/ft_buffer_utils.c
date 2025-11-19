@@ -42,7 +42,7 @@ void	ft_appendstr_buffer(t_data *data, const char *str, int n)
 		ft_write_buffer(data, *str++);
 }
 
-void	ft_appendnbr_buffer(t_data *data, long long int n, \
+void	ft_appendnbr_buffer(t_data *data, long long int n,
 		char *base, int base_len)
 {
 	if (check_zero_int(data, n))

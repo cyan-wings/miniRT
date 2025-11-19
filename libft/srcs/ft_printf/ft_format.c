@@ -73,8 +73,8 @@ int	ft_format(t_data *data, const char **sptr)
 		data->flags.hyphen = 1;
 		data->flags.width = -data->flags.width;
 	}
-	if (**sptr == '.' && *++*sptr && \
-			ft_get_pw(data, &data->flags.precision, sptr) < 0)
+	if (**sptr == '.' && *++*sptr
+		&& ft_get_pw(data, &data->flags.precision, sptr) < 0)
 		data->flags.precision = -1;
 	if (!ft_in(FT_PRINTF_SPECIFIERS, **sptr) && **sptr != '%')
 		return (FT_PRINTF_PARSE_ERROR);

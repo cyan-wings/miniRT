@@ -21,6 +21,6 @@ double	ft_quatget_magnitude(t_quat *q)
 		ft_putendl_fd("Null pointer.", 2);
 		return (0.0);
 	}
-	return (ft_sqrt(q->w * q->w + q->v.x * q->v.x + \
-				q->v.y * q->v.y + q->v.z * q->v.z));
+	return (ft_sqrt(q->w * q->w + q->v.x * q->v.x
+			+ q->v.y * q->v.y + q->v.z * q->v.z));
 }
